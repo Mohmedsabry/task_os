@@ -16,6 +16,6 @@ fun ButtonShow(text: String, color: Color, onClickedButton: () -> Unit) {
             onClickedButton.invoke()
         }, modifier = Modifier.background(color)
     ) {
-        TextShow(text = text)
+
     }
 }
