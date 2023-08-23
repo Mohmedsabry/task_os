@@ -14,6 +14,8 @@ val Pink40 = Color(0xFF7D5260)
 object CustomColor{
     val black = Color(0xFF363636)
     val gray = Color(0xFFC5C5C5)
+    val lightGray = Color(0xFFF9F9F9)
+
     val blue = Color(0xFFC5C5C5)
     val white = Color(0xFFFFFF)
     val lightBlue = Color(0xff3CACFE)
