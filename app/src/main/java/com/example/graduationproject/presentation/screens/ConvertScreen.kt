@@ -146,15 +146,13 @@ fun CurrencyCard(
         ) {
             DropDownShow(
                 list = list, modifier = Modifier
-                    .fillMaxWidth(.5f)
-                    .padding(10.dp)
+                    .fillMaxWidth(.4f)
 
             )
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                    .fillMaxWidth(),
                 value = result, onValueChange = {},
                 enabled = false,
                 shape = RoundedCornerShape(20.dp),
@@ -175,7 +173,7 @@ fun CurrencyCard(
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight(700),
-                    color = Color(0xFFFFFFFF)
+                    color =Color.White
                 )
             )
         }
