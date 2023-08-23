@@ -65,7 +65,7 @@ fun CurrencyCard(
                 text = "Amount",
                 style = TextStyle(
                     fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.open_sans)),
+                    fontFamily = FontFamily(),
                     fontWeight = FontWeight(600),))
 
             var isOpen by remember { mutableStateOf(false) }
@@ -90,7 +90,7 @@ fun CurrencyCard(
                         .clickable { isOpen = true },
                     style = TextStyle(
                         fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.open_sans)),
+                        fontFamily = FontFamily(),
                         fontWeight = FontWeight(600),
                 )
                 )
