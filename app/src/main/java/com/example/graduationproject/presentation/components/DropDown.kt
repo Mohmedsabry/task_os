@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownShow(list: List<Pair<String, Int>>) {
+fun DropDownShow(list: List<Pair<String, Int>>,modifier:Modifier=Modifier) {
     var text by remember {
         mutableStateOf("")
     }

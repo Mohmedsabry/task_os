@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.graduationproject"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.graduationproject"
@@ -63,6 +63,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     // glide for picture if needed
     implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.compose.foundation:foundation-layout-android:1.5.0")
+    implementation("com.google.android.engage:engage-core:1.2.0")
     val lifecycle_version = "2.6.1"
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     testImplementation("junit:junit:4.13.2")
