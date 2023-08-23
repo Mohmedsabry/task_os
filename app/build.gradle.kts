@@ -63,6 +63,11 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     // glide for picture if needed
     implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     val lifecycle_version = "2.6.1"
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     testImplementation("junit:junit:4.13.2")

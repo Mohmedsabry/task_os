@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -18,7 +19,8 @@ fun TextShow(
     color: Color,
     fontSize: Int = 22,
     weight: Int = 600,
-    fontFamily: FontFamily
+    fontFamily: FontFamily,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = text,
@@ -27,7 +29,8 @@ fun TextShow(
             fontFamily = fontFamily,
             fontWeight = FontWeight(weight),
             color = color,
-        )
+        ),
+        modifier=  modifier
     )
 }
 
