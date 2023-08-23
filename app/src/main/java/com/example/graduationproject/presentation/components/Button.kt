@@ -3,9 +3,11 @@ package com.example.graduationproject.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 
 
@@ -14,9 +16,9 @@ fun ButtonShow(text: String, background: Color, color: Color, onClickedButton: (
     Button(
         onClick = {
             onClickedButton.invoke()
-        }, modifier = Modifier.background(color)
+        }, modifier = Modifier
     ) {
-
+        Text(text = text, style = TextStyle(color))
     }
 }
 
