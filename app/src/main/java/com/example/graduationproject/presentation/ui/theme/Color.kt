@@ -13,8 +13,9 @@ val Pink40 = Color(0xFF7D5260)
 // custom colors
 object CustomColor{
     val black = Color(0xFF202020)
-    val gray = Color(0xFFC5C5C5)
-    val blue = Color(0xFFC5C5C5)
-    val white = Color(0xFFFFFF)
+    val gray = Color(0x80C5C5C5)
+    val blue = Color(0xFF406CC2)
+    val white = Color(0xFFFFFFFF)
     val lightBlue = Color(0xff3CACFE)
+    val compareButtonColor = Color(0xFF363636)
 }
