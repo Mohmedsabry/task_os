@@ -1,11 +1,10 @@
-package com.example.graduationproject.presentation
+package com.example.graduationproject.presentation.ui.theme.activites
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.graduationproject.presentation.screen.CompareScreen
 import com.example.graduationproject.presentation.ui.theme.GraduationProjectTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +18,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
