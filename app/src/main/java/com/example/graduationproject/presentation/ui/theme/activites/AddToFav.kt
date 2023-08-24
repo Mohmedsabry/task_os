@@ -67,7 +67,7 @@ class AddToFav : ComponentActivity() {
                     )
                     Card(
                         shape = CardDefaults.outlinedShape,
-                        colors = CardDefaults.cardColors(Color(0xffB8B8B8)),
+                        colors = CardDefaults.cardColors(CustomColor.lightGray),
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Alignment.Start)

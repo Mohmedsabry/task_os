@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -38,20 +39,20 @@ fun BaseScreen(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fraction = 0.40f), Alignment.TopEnd
+            .fillMaxHeight(fraction = 0.26f), Alignment.TopEnd
     ) {
 
         Image(
             painter = painterResource(id = R.drawable.img),
             contentDescription = "logo", contentScale = ContentScale.Crop,
-            modifier = Modifier
+            modifier = Modifier.alpha(1f)
                 .fillMaxWidth()
-                .padding(bottom = 30.dp),
+                .padding(bottom = 25.dp),
         )
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(30.dp),
+                .padding(start=30.dp,top=15.dp),
             text = "ConCurrency",
             style = TextStyle(
                 fontSize = 22.sp,
@@ -66,24 +67,24 @@ fun BaseScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 50.dp)
-                .padding(bottom = 30.dp),
+                .padding(bottom =10.dp,top=20.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Currency Converter", style = TextStyle(
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat)),
-                    fontWeight = FontWeight(600),
+                    fontWeight = FontWeight(900),
                     color = Color.White,
                 )
             )
             Text(
                 text = "Check live foreign currency exchange rates", style = TextStyle(
-                    fontSize = 12.78.sp,
+                    fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.montserrat)),
-                    fontWeight = FontWeight(400),
-                    color = Color.White,
+                    fontWeight = FontWeight(750),
+                    color = Color.LightGray,
                 )
             )
         }

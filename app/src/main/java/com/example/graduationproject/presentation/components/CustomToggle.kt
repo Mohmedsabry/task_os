@@ -52,7 +52,7 @@ fun StateToggle(
 
     Card(
         shape = RoundedCornerShape(38.dp), modifier = modifier
-            .height(160.dp)
+            .height(120.dp)
             .padding(top = 60.dp, start = 30.dp, end = 30.dp)
     ) {
         Box(
