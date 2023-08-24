@@ -76,3 +76,4 @@ fun GreetingPreview() {
 
     }
 }
+// dimensionResource(id = R.dimen._17sdp)
