@@ -174,7 +174,7 @@ fun ConvertScreen(
                     text = "Convert",
                     style = TextStyle(
                         fontSize = 16.sp,
-                        fontWeight = FontWeight(700),
+                        fontWeight = FontWeight(800),
                         color = Color.White
                     )
                 )
@@ -183,10 +183,12 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start,
             ) {
                 TextShow(
+                    modifier=Modifier.align(alignment = Alignment.CenterVertically),
                     text = "live exchange rates",
                     color = Color.Black,
                     fontFamily = FontFamily.Default,
-                    fontSize = 18
+                    fontSize = 18,
+                    weight = 700
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
@@ -212,7 +214,7 @@ fun ConvertScreen(
             }
             Card(
                 shape = CardDefaults.outlinedShape,
-                colors = CardDefaults.cardColors(Color(0xffB8B8B8)),
+                colors = CardDefaults.cardColors(CustomColor.lightGray),
                 modifier = Modifier
                     .padding(10.dp)
                     .align(Alignment.Start)
