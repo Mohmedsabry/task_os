@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -91,7 +93,7 @@ class AddToFav : ComponentActivity() {
                                         .padding(10.dp)
                                         .fillMaxWidth()
                                 ) {
-                                    var checked by remember {
+                                    var isCheck by remember {
                                         mutableStateOf(false)
                                     }
                                     GlideImage(
@@ -121,13 +123,31 @@ class AddToFav : ComponentActivity() {
                                             fontSize = 11
                                         )
                                     }
+
                                     Spacer(modifier = Modifier.weight(1f))
-                                    Checkbox(
-                                        checked = checked,
-                                        onCheckedChange = { checked = it },
-                                        Modifier,
-                                        colors = CheckboxDefaults.colors(Color(0xff363636))
-                                    )
+                                    Card(
+                                        colors = CardDefaults.cardColors(Color.Black),
+                                        elevation = CardDefaults.cardElevation(0.dp),
+                                        shape = RoundedCornerShape((12.dp)),
+                                    ) {
+                                        Box(modifier = Modifier
+                                            .background(
+                                                if (isCheck) Color.Black else Color.White
+                                            )
+                                            .clickable {
+                                                isCheck = !isCheck
+                                            }
+                                            .size(25.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            if (isCheck)
+                                                Icon(
+                                                    Icons.Default.Check,
+                                                    contentDescription = "",
+                                                    tint = Color.White
+                                                )
+                                        }
+                                    }
                                 }
                             }
                         }
