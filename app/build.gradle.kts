@@ -65,6 +65,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     implementation("androidx.compose.foundation:foundation-layout-android:1.5.0")
     implementation("com.google.android.engage:engage-core:1.2.0")
+    implementation("androidx.core:core-ktx:+")
     val lifecycle_version = "2.6.1"
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     testImplementation("junit:junit:4.13.2")
