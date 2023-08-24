@@ -51,11 +51,13 @@ fun StateToggle(
     }
 
     Card(
-        shape = RoundedCornerShape(38.dp), modifier =modifier.height(160.dp)
-            .padding(bottom=50.dp,top=50.dp,start=30.dp,end=30.dp)
+        shape = RoundedCornerShape(38.dp), modifier = modifier
+            .height(160.dp)
+            .padding(top = 60.dp, start = 30.dp, end = 30.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .fillMaxHeight()
                 .background(CustomColor.lightGray), contentAlignment = Alignment.Center
         ) {
             Row(
@@ -83,9 +85,11 @@ fun StateToggle(
                                     if (text == selectedOption) {
                                         Color.White
                                     } else {
-                                       CustomColor.lightGray
+                                        CustomColor.lightGray
                                     }
-                                ).padding(10.dp).weight(1f)
+                                )
+                                .padding(10.dp)
+                                .weight(1f)
                         )
                     Spacer(modifier = Modifier.width(10.dp))
                     }

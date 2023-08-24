@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.graduationproject.R
+import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.ui.theme.CustomColor
@@ -151,4 +152,4 @@ fun CompareScreen() {
     }
 }
 
-val list = listOf("maser" to R.drawable.egypt, "flag" to R.drawable.baseline_flag_24)
+val list = listOf("maser" to SharedObject.url, "flag" to SharedObject.url)
