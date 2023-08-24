@@ -74,7 +74,7 @@ fun TriStateToggle() {
                                     if (text == selectedOption) {
                                         Color.White
                                     } else {
-                                        Color(0xFFF8F8F8)
+                                       CustomColor.lightGray
                                     }
                                 ).padding(10.dp)
                         )
