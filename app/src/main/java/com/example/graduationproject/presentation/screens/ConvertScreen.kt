@@ -112,7 +112,7 @@ fun CurrencyCard(
             }
             Box(
                 modifier = Modifier
-                    .padding(start = 100.dp)
+                    .padding(start = 120.dp)
                     .clip(CircleShape)
                     .clickable {
                     }
@@ -154,7 +154,7 @@ fun CurrencyCard(
             ) {
                 DropDownShow(
                     list = list, modifier = Modifier
-                        .fillMaxWidth(.2f)
+                        .fillMaxWidth(.4f)
 
                 )
                 Spacer(modifier = Modifier.width(8.dp))

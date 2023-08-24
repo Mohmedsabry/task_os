@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.graduationproject.R
 import com.example.graduationproject.presentation.ui.theme.CustomColor
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun StateToggle() {
     val states = listOf(
@@ -47,7 +47,9 @@ fun StateToggle() {
     }
 
     Card(
-        shape = RoundedCornerShape(38.dp), modifier = Modifier.fillMaxWidth().padding(30.dp)
+        shape = RoundedCornerShape(38.dp), modifier =
+        Modifier.fillMaxWidth()
+            .padding(40.dp)
     ) {
         Box(
             modifier = Modifier

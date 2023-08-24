@@ -142,7 +142,7 @@ fun CompareScreen() {
             Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                CustomColor.compareButtonColor,
+                CustomColor.black,
                 contentColor = Color.White
             )
         ) {

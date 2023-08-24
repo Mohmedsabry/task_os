@@ -71,7 +71,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
         implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
-
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha12")
+    // To use constraintlayout in compose
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
