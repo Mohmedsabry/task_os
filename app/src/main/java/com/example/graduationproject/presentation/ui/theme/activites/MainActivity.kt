@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.graduationproject.R
 import com.example.graduationproject.presentation.components.DropDownShow
+import com.example.graduationproject.presentation.screens.BaseScreen
 import com.example.graduationproject.presentation.ui.theme.GraduationProjectTheme
 
 class MainActivity : ComponentActivity() {

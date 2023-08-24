@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Divider
@@ -41,11 +42,16 @@ fun DropDownShow(list: List<Pair<String, Int>>,modifier:Modifier=Modifier) {
             onValueChange = {},
             enabled = false,
             trailingIcon = {
-                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "drop down")
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "drop down",
+                    Modifier.clickable {
+                        expanded = expanded.not()
+                    }
+                )
             },
-            modifier = Modifier.clickable {
-                expanded = expanded.not()
-            }
+            modifier = modifier,
+            shape = RoundedCornerShape(20.dp)
         )
         DropdownMenu(expanded = expanded, onDismissRequest = {
             expanded = false
