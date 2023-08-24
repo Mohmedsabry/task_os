@@ -1,6 +1,7 @@
 package com.example.graduationproject.presentation.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +39,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -52,7 +54,7 @@ import com.example.graduationproject.presentation.ui.theme.CustomColor
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun ConvertScreen(
-    openAddToFav:()->Unit
+    openAddToFav: () -> Unit
 ) {
     var amountValue by remember {
         mutableStateOf("1")
@@ -178,7 +180,7 @@ fun ConvertScreen(
             }
             Row(
                 horizontalArrangement = Arrangement.Start,
-                ) {
+            ) {
                 TextShow(
                     text = "live exchange rates",
                     color = Color.Black,
@@ -186,14 +188,15 @@ fun ConvertScreen(
                     fontSize = 18
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Button(
+                OutlinedButton(
                     onClick = {
                         openAddToFav.invoke()
                     },
-                    colors = ButtonDefaults.buttonColors(Color.White),
-                    border = BorderStroke(5.dp,Color.Black)
+                    colors = ButtonDefaults.outlinedButtonColors(Color.White),
+                    border = BorderStroke(1.dp, Color.Black),
+                    shape = RoundedCornerShape(50)
                 ) {
-                    Icon(
+                    Image(
                         painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
                         contentDescription = "Add to favourite"
                     )
