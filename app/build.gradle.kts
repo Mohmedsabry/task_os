@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.graduationproject"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.graduationproject"
@@ -63,18 +63,18 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     // glide for picture if needed
     implementation ("com.github.bumptech.glide:glide:4.15.1")
-    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.1")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.compose.foundation:foundation-layout-android:1.5.0")
+    implementation("com.google.android.engage:engage-core:1.2.0")
+    implementation("androidx.core:core-ktx:+")
     val lifecycle_version = "2.6.1"
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
         implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
-
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha12")
+    // To use constraintlayout in compose
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
