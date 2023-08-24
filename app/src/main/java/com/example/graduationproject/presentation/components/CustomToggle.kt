@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +34,7 @@ import com.example.graduationproject.presentation.ui.theme.CustomColor
 
 @Preview
 @Composable
-fun TriStateToggle() {
+fun StateToggle() {
     val states = listOf(
         "Convert",
         "Compare"
@@ -45,7 +47,7 @@ fun TriStateToggle() {
     }
 
     Card(
-        shape = RoundedCornerShape(38.dp)
+        shape = RoundedCornerShape(38.dp), modifier = Modifier.fillMaxWidth().padding(30.dp)
     ) {
         Box(
             modifier = Modifier
@@ -65,6 +67,7 @@ fun TriStateToggle() {
                                 fontWeight = FontWeight(400),
                                 color = CustomColor.textBlack,
                             ),
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(20.dp))
                                 .clickable {
@@ -76,7 +79,7 @@ fun TriStateToggle() {
                                     } else {
                                        CustomColor.lightGray
                                     }
-                                ).padding(10.dp)
+                                ).padding(10.dp).weight(1f)
                         )
                     Spacer(modifier = Modifier.width(10.dp))
                     }

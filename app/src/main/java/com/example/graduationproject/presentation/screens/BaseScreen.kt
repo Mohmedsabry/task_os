@@ -1,5 +1,6 @@
 package com.example.graduationproject.presentation.screens
 
+import StateToggle
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +55,9 @@ fun BaseScreen() {
                     modifier = Modifier.fillMaxSize(),
                 )
                 Text(
-                    modifier = Modifier.fillMaxSize().padding(30.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(30.dp),
                     text = "ConCurrency",
                     style = TextStyle(
                         fontSize = 22.sp,
@@ -87,23 +90,11 @@ fun BaseScreen() {
                             color = Color.White,
                         )
                     )
+
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
 
         }
     }
