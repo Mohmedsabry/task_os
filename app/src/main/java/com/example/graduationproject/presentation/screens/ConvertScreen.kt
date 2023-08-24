@@ -52,7 +52,7 @@ import com.example.graduationproject.presentation.ui.theme.CustomColor
 @Preview()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrencyCard(
+fun ConvertScreen(
 ) {
     var amountValue by remember {
         mutableStateOf("1")
@@ -150,17 +150,16 @@ fun CurrencyCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+              horizontalArrangement = Arrangement.Start
             ) {
                 DropDownShow(
                     list = list, modifier = Modifier
-                        .fillMaxWidth(.4f)
+                        .fillMaxWidth(.3f)
 
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+               Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.weight(1f),
                     value = result, onValueChange = {},
                     enabled = false,
                     shape = RoundedCornerShape(20.dp),

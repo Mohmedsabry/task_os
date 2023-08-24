@@ -1,7 +1,10 @@
 package com.example.graduationproject.presentation.screens
 
+import StateToggle
 import android.annotation.SuppressLint
+import android.text.Layout
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -28,29 +32,28 @@ import com.example.graduationproject.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+
 @Composable
-fun BaseScreen() {
+fun BaseScreen(
+
+    selectedScreen:(stateText:String)->Unit
+
+) {
 
     Scaffold() {
-
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(fraction = 0.30f), Alignment.TopEnd
+                    .fillMaxHeight(fraction = 0.40f), Alignment.TopEnd
             ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.img),
-                    contentDescription = "logo",
-                    modifier = Modifier.fillMaxSize(),
+                    contentDescription = "logo",contentScale= ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 40.dp),
                 )
                 Text(
                     modifier = Modifier
@@ -63,11 +66,14 @@ fun BaseScreen() {
                         color = Color.White,
                     )
                 )
-
+StateToggle(modifier=Modifier.align(alignment=Alignment.BottomCenter)){
+selectedScreen.invoke(it)
+}
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 20.dp, vertical = 50.dp),
+                        .padding(horizontal = 20.dp, vertical = 50.dp)
+                        .padding(bottom=30.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -89,12 +95,9 @@ fun BaseScreen() {
                             color = Color.White,
                         )
                     )
-
-
                 }
 
             }
 
         }
     }
-}
