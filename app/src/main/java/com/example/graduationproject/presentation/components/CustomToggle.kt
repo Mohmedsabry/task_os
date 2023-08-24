@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,9 +33,12 @@ import androidx.compose.ui.unit.sp
 import com.example.graduationproject.R
 import com.example.graduationproject.presentation.ui.theme.CustomColor
 
-@Preview(showBackground = true)
+
 @Composable
-fun StateToggle() {
+fun StateToggle(
+    modifier: Modifier=Modifier,
+    selectedScreen:(stateText:String)->Unit
+) {
     val states = listOf(
         "Convert",
         "Compare"
@@ -47,12 +51,11 @@ fun StateToggle() {
     }
 
     Card(
-        shape = RoundedCornerShape(38.dp), modifier =
-        Modifier.fillMaxWidth()
-            .padding(40.dp)
+        shape = RoundedCornerShape(38.dp), modifier =modifier.height(160.dp)
+            .padding(bottom=50.dp,top=50.dp,start=30.dp,end=30.dp)
     ) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.fillMaxHeight()
                 .background(CustomColor.lightGray), contentAlignment = Alignment.Center
         ) {
             Row(
@@ -64,7 +67,7 @@ fun StateToggle() {
                         Text(
                             text = text,
                             style = TextStyle(
-                                fontSize = 13.8.sp,
+                                fontSize = 18.sp,
                                 fontFamily = FontFamily(Font(R.font.poppins)),
                                 fontWeight = FontWeight(400),
                                 color = CustomColor.textBlack,
@@ -74,6 +77,7 @@ fun StateToggle() {
                                 .clip(shape = RoundedCornerShape(20.dp))
                                 .clickable {
                                     onSelectionChange(text)
+                                    selectedScreen.invoke(text)
                                 }
                                 .background(
                                     if (text == selectedOption) {
