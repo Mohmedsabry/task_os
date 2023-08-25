@@ -118,25 +118,17 @@ class AddToFav : ComponentActivity() {
                                     }
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
-                                        Text(
+                                        TextShow(
                                             text = "USD",
-                                            style = TextStyle(
-                                                fontSize = 13.49.sp,
-                                                lineHeight = 23.12.sp,
-                                                fontFamily = FontFamily(Font(R.font.poppins)),
-                                                fontWeight = FontWeight(400),
-                                                color = Color(0xFF121212),
-                                            )
+                                            color = CustomColor.black,
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 15
                                         )
-                                        Text(
+                                        TextShow(
                                             text = "CURRENCY",
-                                            style = TextStyle(
-                                                fontSize = 11.56.sp,
-                                                lineHeight = 19.27.sp,
-                                                fontFamily = FontFamily(Font(R.font.poppins)),
-                                                fontWeight = FontWeight(400),
-                                                color = Color(0xFFB8B8B8),
-                                            )
+                                            color = Color(0xFFB8B8B8),
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 13
                                         )
                                     }
 

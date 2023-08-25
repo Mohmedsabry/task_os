@@ -49,6 +49,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
+import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.list
 import com.example.graduationproject.presentation.ui.theme.CustomColor
@@ -61,6 +62,9 @@ fun ConvertScreen(
 ) {
     var amountValue by remember {
         mutableStateOf("1")
+    }
+    var loading by remember {
+        mutableStateOf("")
     }
 
     var result by remember {
@@ -101,7 +105,11 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+                    modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth(.4f),
                     value = amountValue, onValueChange = {
                         amountValue = it
@@ -113,7 +121,11 @@ fun ConvertScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DropDownShow(
-                    list = list, modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+                    list = list, modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth()
                 )
             }
@@ -152,13 +164,22 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 DropDownShow(
-                    list = list, modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+                    list = list, modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth(.5f)
 
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    modifier = Modifier.weight(1f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        ),
                     value = result, onValueChange = {},
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
 
@@ -168,9 +189,10 @@ fun ConvertScreen(
                 )
 
             }
-
+            Loading(isDisplayed = true)
             Button(
-                onClick = { /*TODO*/ }, modifier = Modifier
+                onClick = {
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFF363636)),
@@ -262,13 +284,13 @@ fun ConvertScreen(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 TextShow(
-                                    text = "Usa",
+                                    text = "USA",
                                     color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 15
                                 )
                                 TextShow(
-                                    text = "Currancy",
+                                    text = "CURRENCY",
                                     color = Color(0xFFB8B8B8),
                                     fontFamily = FontFamily.Default,
                                     fontSize = 13
