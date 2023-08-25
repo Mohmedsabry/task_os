@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -47,7 +45,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.ui.theme.CustomColor
 import com.example.graduationproject.presentation.ui.theme.activites.ui.theme.GraduationProjectTheme
 
 class AddToFav : ComponentActivity() {
@@ -61,7 +58,7 @@ class AddToFav : ComponentActivity() {
                     Modifier
                         .fillMaxWidth()
                         .background(Color.White)
-                       .padding(start = 10.dp, top = 30.dp, end = 10.dp, bottom = 100.dp)
+                        .padding(start = 10.dp, top = 30.dp, end = 10.dp, bottom = 100.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_close_24),
@@ -71,7 +68,8 @@ class AddToFav : ComponentActivity() {
                                 finish()
                                 println("finish")
                             }
-                            .align(Alignment.End).padding(20.dp)
+                            .align(Alignment.End)
+                            .padding(20.dp)
                     )
                     Card(
                         shape = CardDefaults.outlinedShape,
@@ -142,7 +140,7 @@ class AddToFav : ComponentActivity() {
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Card(
-                                       border = BorderStroke(1.dp, Color(0xFFB8B8B8)),
+                                        border = BorderStroke(1.dp, Color(0xFFB8B8B8)),
                                         colors = CardDefaults.cardColors(Color(0xFFB8B8B8)),
                                         elevation = CardDefaults.cardElevation(0.dp),
                                         shape = RoundedCornerShape((12.dp)),
@@ -174,23 +172,8 @@ class AddToFav : ComponentActivity() {
 
         }
     }
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun BottomSheet(
-
-    ){
 
 
-        ModalBottomSheetLayout(sheetContent = {
-
-        },
-            sheetShape= RoundedCornerShape(topStart = 8.dp, topEnd =8.dp),
-            sheetElevation = 12.dp,
-
-        ) {
-
-        }
-    }
 }
 
 

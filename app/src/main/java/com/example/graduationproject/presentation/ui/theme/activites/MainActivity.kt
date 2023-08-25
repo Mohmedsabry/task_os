@@ -18,12 +18,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,15 +42,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.room.util.convertUUIDToByte
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.Repository
 import com.example.graduationproject.data.model.CurrencyApiItem
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
+import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.screen.CompareScreen
 import com.example.graduationproject.presentation.screens.BaseScreen
@@ -64,7 +66,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val repository = Repository()
-
+            LaunchedEffect(key1 = ""){
+                SharedObject.initList(repository.getList())
+                println("${SharedObject.countriesList} from apiiii")
+            }
             GraduationProjectTheme {
                 var selectedScreenState by remember {
                     mutableStateOf("Convert")
@@ -98,12 +103,15 @@ class MainActivity : ComponentActivity() {
                         BottomSheetShow(repository) {
                             showBottomSheet = false
                         }
+
                     }
                 }
 
             }
         }
     }
+
+
 
     @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalGlideComposeApi::class)
@@ -156,8 +164,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(10.dp)
                     ) {
-                        items(list2.size) {
-                            index->
+                        items(list2.size) { index ->
                             Row(
                                 Modifier
                                     .padding(10.dp)

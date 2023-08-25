@@ -9,6 +9,6 @@ interface NetworkService {
     suspend fun convert(): ConvertModel
     suspend fun compare()
 
-    @GET("")
+    @GET("countries")
     suspend fun getList(): List<CurrencyApiItem>
 }
