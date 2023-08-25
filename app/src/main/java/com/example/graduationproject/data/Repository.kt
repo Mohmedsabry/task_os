@@ -1,11 +1,21 @@
 package com.example.graduationproject.data
 
 import com.example.graduationproject.data.datasource.RoomDB
+import com.example.graduationproject.data.model.ConvertModel
 import com.example.graduationproject.data.model.CurrencyApiItem
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
+import com.example.graduationproject.data.network.NetworkService
+import com.example.graduationproject.data.presestance.SharedObject
 
 class Repository {
     private val roomDao = RoomDB.getInstance().getDao()
+    private val retrofit = SharedObject.getInstanceOfRetrofit()
+    private val networkService = retrofit.create(NetworkService::class.java)
+    // retrofit
+    suspend fun convert():ConvertModel = networkService.convert()
+    suspend fun getList():List<CurrencyApiItem> = networkService.getList()
+
+    // room DB
     suspend fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
         if (this.getFavById(currencyRoomDBItem.id) == null) {
             currencyRoomDBItem.flag = true
