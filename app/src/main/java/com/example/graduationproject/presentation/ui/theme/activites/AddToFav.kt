@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -169,6 +171,24 @@ class AddToFav : ComponentActivity() {
                     }
                 }
             }
+
+        }
+    }
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun BottomSheet(
+
+    ){
+
+
+        ModalBottomSheetLayout(sheetContent = {
+
+        },
+            sheetShape= RoundedCornerShape(topStart = 8.dp, topEnd =8.dp),
+            sheetElevation = 12.dp,
+
+        ) {
+
         }
     }
 }

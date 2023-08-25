@@ -2,6 +2,7 @@ package com.example.graduationproject.presentation.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,17 +101,19 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 OutlinedTextField(
-                    modifier = Modifier
+                    modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
                         .fillMaxWidth(.4f),
                     value = amountValue, onValueChange = {
                         amountValue = it
                     },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+
                     shape = RoundedCornerShape(20.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DropDownShow(
-                    list = list, modifier = Modifier
+                    list = list, modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
                         .fillMaxWidth()
                 )
             }
@@ -148,14 +152,16 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 DropDownShow(
-                    list = list, modifier = Modifier
+                    list = list, modifier = Modifier.background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
                         .fillMaxWidth(.5f)
 
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
                     value = result, onValueChange = {},
+                    colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+
                     enabled = false,
                     shape = RoundedCornerShape(20.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)

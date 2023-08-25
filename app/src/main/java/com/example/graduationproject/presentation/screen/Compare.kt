@@ -1,5 +1,6 @@
 package com.example.graduationproject.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,17 +74,18 @@ fun CompareScreen() {
         ) {
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth(.5f),
+                    .fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
                 value = amount, onValueChange = {
                     amount = it
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 shape = RoundedCornerShape(20.dp)
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(10.dp).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)))
             DropDownShow(
                 list = list, modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -112,11 +115,11 @@ fun CompareScreen() {
         ) {
             DropDownShow(
                 list = list, modifier = Modifier
-                    .fillMaxWidth(.5f)
+                    .fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
             )
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
-                list = list, modifier = Modifier.fillMaxWidth()
+                list = list, modifier = Modifier.fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -126,15 +129,19 @@ fun CompareScreen() {
         ) {
             OutlinedTextField(
                 value = target1, onValueChange = {}, enabled = false,
-                modifier = Modifier.fillMaxWidth(.5f),
-                shape = RoundedCornerShape(20.dp)
-            )
+                modifier = Modifier.fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
+                shape = RoundedCornerShape(20.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+
+                )
             Spacer(modifier = Modifier.width(10.dp))
             OutlinedTextField(
                 value = target2, onValueChange = {}, enabled = false,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp)
-            )
+                modifier = Modifier.fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
+               shape = RoundedCornerShape(20.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+
+                )
         }
         Spacer(modifier = Modifier.height(10.dp))
         Button(
