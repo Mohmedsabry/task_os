@@ -11,7 +11,7 @@ class Repository {
     private val roomDao = RoomDB.getInstance().getDao()
     private val retrofit = SharedObject.getInstanceOfRetrofit()
     private val networkService = retrofit.create(NetworkService::class.java)
-    // retrofit
+     //retrofit
     suspend fun convert():ConvertModel = networkService.convert()
     suspend fun getList():List<CurrencyApiItem> = networkService.getList()
 

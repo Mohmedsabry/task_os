@@ -32,13 +32,10 @@ import com.example.graduationproject.data.model.CurrencyApiItem
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun DropDownShow(currencyApi: List<CurrencyApiItem>, modifier: Modifier = Modifier) {
-    var text by remember {
-        mutableStateOf(currencyApi[0].currency)
-    }
-    var url by remember {
-        mutableStateOf(currencyApi[0].countryFlag)
-    }
+fun DropDownShow(currencyApiItem: CurrencyApiItem,currencyApi: List<CurrencyApiItem>, modifier: Modifier = Modifier,selectedItem:(selectText:CurrencyApiItem)->Unit) {
+
+    var text  = currencyApiItem.currency
+    var url = currencyApiItem.countryFlag
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -87,6 +84,7 @@ fun DropDownShow(currencyApi: List<CurrencyApiItem>, modifier: Modifier = Modifi
                     }
                 }, onClick = {
                     text = item.currency
+                    selectedItem.invoke(item)
                     url = item.countryFlag
                     expanded = false
                 })

@@ -3,6 +3,7 @@ package com.example.graduationproject.presentation.ui.theme.activites
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -31,15 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.ui.theme.CustomColor
 import com.example.graduationproject.presentation.ui.theme.activites.ui.theme.GraduationProjectTheme
 
 class AddToFav : ComponentActivity() {
@@ -53,7 +58,7 @@ class AddToFav : ComponentActivity() {
                     Modifier
                         .fillMaxWidth()
                         .background(Color.White)
-                        .padding(20.dp)
+                        .padding(start = 10.dp, top = 30.dp, end = 10.dp, bottom = 100.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_close_24),
@@ -64,10 +69,11 @@ class AddToFav : ComponentActivity() {
                                 println("finish")
                             }
                             .align(Alignment.End)
+                            .padding(20.dp)
                     )
                     Card(
                         shape = CardDefaults.outlinedShape,
-                        colors = CardDefaults.cardColors(CustomColor.lightGray),
+                        colors = CardDefaults.cardColors(Color(0xFFF8F8F8)),
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Alignment.Start)
@@ -110,23 +116,32 @@ class AddToFav : ComponentActivity() {
                                     }
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
-                                        TextShow(
-                                            text = "Usa",
-                                            color = CustomColor.black,
-                                            fontFamily = FontFamily.Default,
-                                            fontSize = 13
+                                        Text(
+                                            text = "USD",
+                                            style = TextStyle(
+                                                fontSize = 13.49.sp,
+                                                lineHeight = 23.12.sp,
+                                                fontFamily = FontFamily(Font(R.font.poppins)),
+                                                fontWeight = FontWeight(400),
+                                                color = Color(0xFF121212),
+                                            )
                                         )
-                                        TextShow(
-                                            text = "Currancy",
-                                            color = CustomColor.black,
-                                            fontFamily = FontFamily.Default,
-                                            fontSize = 11
+                                        Text(
+                                            text = "CURRENCY",
+                                            style = TextStyle(
+                                                fontSize = 11.56.sp,
+                                                lineHeight = 19.27.sp,
+                                                fontFamily = FontFamily(Font(R.font.poppins)),
+                                                fontWeight = FontWeight(400),
+                                                color = Color(0xFFB8B8B8),
+                                            )
                                         )
                                     }
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Card(
-                                        colors = CardDefaults.cardColors(Color.Black),
+                                        border = BorderStroke(1.dp, Color(0xFFB8B8B8)),
+                                        colors = CardDefaults.cardColors(Color(0xFFB8B8B8)),
                                         elevation = CardDefaults.cardElevation(0.dp),
                                         shape = RoundedCornerShape((12.dp)),
                                     ) {
@@ -154,23 +169,12 @@ class AddToFav : ComponentActivity() {
                     }
                 }
             }
+
         }
     }
+
+
 }
 
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview2() {
-    GraduationProjectTheme {
-        Greeting("Android")
-    }
-}

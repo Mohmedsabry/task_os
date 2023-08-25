@@ -45,14 +45,15 @@ fun BaseScreen(
         Image(
             painter = painterResource(id = R.drawable.img),
             contentDescription = "logo", contentScale = ContentScale.Crop,
-            modifier = Modifier.alpha(1f)
+            modifier = Modifier
+                .alpha(1f)
                 .fillMaxWidth()
                 .padding(bottom = 25.dp),
         )
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start=30.dp,top=15.dp),
+                .padding(start = 30.dp, top = 15.dp),
             text = "ConCurrency",
             style = TextStyle(
                 fontSize = 22.sp,
@@ -67,7 +68,7 @@ fun BaseScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 50.dp)
-                .padding(bottom =10.dp,top=20.dp),
+                .padding(bottom = 10.dp, top = 20.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

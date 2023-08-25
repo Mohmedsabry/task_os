@@ -3,6 +3,8 @@ package com.example.graduationproject.presentation.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,13 +51,11 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.Repository
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
-import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.list
 import com.example.graduationproject.presentation.ui.theme.CustomColor
 import kotlinx.coroutines.launch
-
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -70,6 +71,12 @@ fun ConvertScreen(
 
     var result by remember {
         mutableStateOf("1")
+    }
+    var base by remember {
+        mutableStateOf(list[0])
+    }
+    var target by remember {
+        mutableStateOf(list[1])
     }
     var list1 by remember {
         mutableStateOf(listOf<CurrencyRoomDBItem>())
@@ -113,18 +120,36 @@ fun ConvertScreen(
             ) {
                 OutlinedTextField(
                     modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth(.4f),
                     value = amountValue, onValueChange = {
                         amountValue = it
                     },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
                     shape = RoundedCornerShape(20.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DropDownShow(
-                    currencyApi = list, modifier = Modifier
+                    base,
+                    currencyApi = list,
+                    modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth()
-                )
+                ) { selectedItem ->
+                    if (selectedItem == target) {
+                        target = base
+                        base = selectedItem
+                    } else {
+                        base = selectedItem
+                    }
+                }
             }
             Icon(
                 painter = painterResource(R.drawable.baseline_sync_24),
@@ -132,7 +157,11 @@ fun ConvertScreen(
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 12.dp)
                     .size(25.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally).clickable {
+                        val i = target
+                        target = base
+                        base = i
+                    },
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Row(
@@ -161,13 +190,29 @@ fun ConvertScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 DropDownShow(
-                    currencyApi = list, modifier = Modifier
+                    target,
+                    currencyApi = list.filter {
+                        it.currency != base.currency
+                    },
+                    modifier = Modifier
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        )
                         .fillMaxWidth(.5f)
-                )
+                ) { selectedItem ->
+                        target = selectedItem
+                }
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            color = Color(0xFFF9F9F9),
+                            shape = RoundedCornerShape(size = 20.dp)
+                        ),
                     value = result, onValueChange = {},
+                    colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
                     enabled = false,
                     shape = RoundedCornerShape(20.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -246,13 +291,13 @@ fun ConvertScreen(
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(list1.size) {
-                        index->
+                    items(list1.size) { index ->
                         Row(
                             Modifier
                                 .padding(10.dp)
                                 .fillMaxWidth()
                         ) {
+
                             GlideImage(
                                 model = list1[index].countryFlag,
                                 contentDescription = "image of currency",
