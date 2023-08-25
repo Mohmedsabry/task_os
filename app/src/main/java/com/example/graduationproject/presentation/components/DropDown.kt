@@ -28,15 +28,16 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
+import com.example.graduationproject.data.model.CurrencyApiItem
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun DropDownShow(list: List<Pair<String, String>>, modifier: Modifier = Modifier) {
+fun DropDownShow(currencyApi: List<CurrencyApiItem>, modifier: Modifier = Modifier) {
     var text by remember {
-        mutableStateOf("")
+        mutableStateOf(currencyApi[0].currency)
     }
     var url by remember {
-        mutableStateOf("")
+        mutableStateOf(currencyApi[0].countryFlag)
     }
     var expanded by remember {
         mutableStateOf(false)
@@ -69,24 +70,24 @@ fun DropDownShow(list: List<Pair<String, String>>, modifier: Modifier = Modifier
         DropdownMenu(expanded = expanded, onDismissRequest = {
             expanded = false
         }) {
-            list.forEach { item ->
+            currencyApi.forEach { item ->
                 DropdownMenuItem(text = {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        GlideImage(model = item.second, contentDescription = "",Modifier.size(30.dp)) {
-                            it.load(item.second)
+                        GlideImage(model = item.countryFlag, contentDescription = "",Modifier.size(30.dp)) {
+                            it.load(item.countryFlag)
                             it.placeholder(R.drawable.baseline_flag_24)
                             it.error(R.drawable.baseline_dehaze_24)
                             it.circleCrop()
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = item.first)
+                        Text(text = item.currency)
                     }
                 }, onClick = {
-                    text = item.first
-                    url = item.second
+                    text = item.currency
+                    url = item.countryFlag
                     expanded = false
                 })
             }

@@ -28,8 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.graduationproject.R
-import com.example.graduationproject.data.presestance.SharedObject
+import com.example.graduationproject.data.model.CurrencyApiItem
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.ui.theme.CustomColor
@@ -81,7 +80,7 @@ fun CompareScreen() {
             )
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
-                list = list, modifier = Modifier
+                currencyApi = list, modifier = Modifier
                     .fillMaxWidth()
             )
         }
@@ -111,12 +110,12 @@ fun CompareScreen() {
             horizontalArrangement = Arrangement.Start
         ) {
             DropDownShow(
-                list = list, modifier = Modifier
+                currencyApi = list, modifier = Modifier
                     .fillMaxWidth(.5f)
             )
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
-                list = list, modifier = Modifier.fillMaxWidth()
+                currencyApi = list, modifier = Modifier.fillMaxWidth()
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -153,4 +152,8 @@ fun CompareScreen() {
     }
 }
 
-val list = listOf("maser" to SharedObject.url, "flag" to SharedObject.url)
+val list = listOf(
+    CurrencyApiItem("https://flagcdn.com/h60/us.png", "USA", "USD", 1),
+    CurrencyApiItem("https://flagcdn.com/h60/eu.png", "EUR", "EUR", 2),
+    CurrencyApiItem("https://flagcdn.com/h60/gb.png", "UK", "GBP", 3),
+)
