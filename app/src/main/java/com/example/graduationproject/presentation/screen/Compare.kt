@@ -30,8 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.graduationproject.R
-import com.example.graduationproject.data.presestance.SharedObject
+import com.example.graduationproject.data.model.CurrencyApiItem
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.ui.theme.CustomColor
@@ -42,15 +41,25 @@ fun CompareScreen() {
     var amount by remember {
         mutableStateOf("")
     }
-    var target1 by remember {
+    var targetValue1 by remember {
         mutableStateOf("")
     }
-    var target2 by remember {
+    var targetValue2 by remember {
         mutableStateOf("")
+    }
+    var targetSelected1 by remember {
+        mutableStateOf(list[1])
+    }
+    var targetSelected2 by remember {
+        mutableStateOf(list[2])
+    }
+    var base by remember {
+        mutableStateOf(list[0])
     }
     Column(Modifier.padding(30.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+            ,
             horizontalArrangement = Arrangement.Start
         ) {
             TextShow(
@@ -74,19 +83,45 @@ fun CompareScreen() {
         ) {
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
+                    .fillMaxWidth(.5f)
+                    .background(
+                        color = Color(0xFFF9F9F9),
+                        shape = RoundedCornerShape(size = 20.dp)
+                    ),
                 value = amount, onValueChange = {
                     amount = it
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 shape = RoundedCornerShape(20.dp)
             )
-            Spacer(modifier = Modifier.width(10.dp).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)))
-            DropDownShow(
-                list = list, modifier = Modifier
-                    .fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+            Spacer(
+                modifier = Modifier
+                    .width(10.dp)
+                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
             )
+            DropDownShow(
+                base,
+                currencyApi = list, modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+            ) { selectedItem ->
+                when (selectedItem) {
+                    targetSelected1 -> {
+                        targetSelected1 = base
+                        base = selectedItem
+                    }
+
+                    targetSelected2 -> {
+                        targetSelected2 = base
+                        base = selectedItem
+                    }
+
+                    else -> {
+                        base = selectedItem
+                    }
+                }
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
@@ -114,13 +149,25 @@ fun CompareScreen() {
             horizontalArrangement = Arrangement.Start
         ) {
             DropDownShow(
-                list = list, modifier = Modifier
-                    .fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
-            )
+                targetSelected1,
+                currencyApi = list.filter {
+                    it.currency != base.currency && it.currency != targetSelected2.currency
+                }, modifier = Modifier
+                    .fillMaxWidth(.5f)
+            ) { selectedItem ->
+                targetSelected1 = selectedItem
+            }
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
-                list = list, modifier = Modifier.fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
-            )
+                targetSelected2,
+                currencyApi = list.filter {
+                    it.currency != base.currency && it.currency != targetSelected1.currency
+                }, modifier = Modifier
+                    .fillMaxWidth(.5f)
+                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+            ) { selectedItem ->
+
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
@@ -128,20 +175,28 @@ fun CompareScreen() {
             horizontalArrangement = Arrangement.Start
         ) {
             OutlinedTextField(
-                value = target1, onValueChange = {}, enabled = false,
-                modifier = Modifier.fillMaxWidth(.5f).background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
+                value = targetValue1, onValueChange = {}, enabled = false,
+                modifier = Modifier
+                    .fillMaxWidth(.5f)
+                    .background(
+                        color = Color(0xFFF9F9F9),
+                        shape = RoundedCornerShape(size = 20.dp)
+                    ),
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-
-                )
+            )
             Spacer(modifier = Modifier.width(10.dp))
             OutlinedTextField(
-                value = target2, onValueChange = {}, enabled = false,
-                modifier = Modifier.fillMaxWidth().background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)),
-               shape = RoundedCornerShape(20.dp),
+                value = targetValue2, onValueChange = {}, enabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color(0xFFF9F9F9),
+                        shape = RoundedCornerShape(size = 20.dp)
+                    ),
+                shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-
-                )
+            )
         }
         Spacer(modifier = Modifier.height(10.dp))
         Button(
@@ -160,4 +215,14 @@ fun CompareScreen() {
     }
 }
 
-val list = listOf("maser" to SharedObject.url, "flag" to SharedObject.url)
+val list = listOf(
+    CurrencyApiItem("https://flagcdn.com/h60/us.png", "USA", "USD", 1),
+    CurrencyApiItem("https://flagcdn.com/h60/eu.png", "EUR", "EUR", 2),
+    CurrencyApiItem("https://flagcdn.com/h60/gb.png", "UK", "GBP", 3),
+)
+
+fun String.swap(target: String) {
+    val s = this
+    this.replace(this, target)
+    target.replace(target, s)
+}
