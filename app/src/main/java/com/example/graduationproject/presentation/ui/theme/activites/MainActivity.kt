@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Surface() {
+
                     Column(
                         modifier = Modifier.fillMaxSize()
                             .verticalScroll(rememberScrollState())
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
+
 
 
     @SuppressLint("CoroutineCreationDuringComposition")
