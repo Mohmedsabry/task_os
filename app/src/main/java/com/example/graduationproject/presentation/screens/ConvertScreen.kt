@@ -46,16 +46,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.Repository
+import com.example.graduationproject.data.model.CompareModelGet
+import com.example.graduationproject.data.model.CompareModelPost
+import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
+import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.list
 import com.example.graduationproject.presentation.ui.theme.CustomColor
+import com.example.graduationproject.presentation.viewmodels.SharedViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.converter.gson.GsonConverterFactory
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -65,24 +76,39 @@ fun ConvertScreen(
     openAddToFav: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val viewModel = SharedViewModel()
     var amountValue by remember {
-        mutableStateOf("1")
+        mutableStateOf("")
     }
 
     var result by remember {
         mutableStateOf("1")
     }
     var base by remember {
-        mutableStateOf(list[0])
+        if(SharedObject.countriesList.isNotEmpty())
+            mutableStateOf(SharedObject.countriesList[0])
+        else{
+            mutableStateOf(Currency("USD","https://flagcdn.com/h60/us.png",1))
+        }
     }
     var target by remember {
-        mutableStateOf(list[1])
+        if(SharedObject.countriesList.isNotEmpty())
+            mutableStateOf(SharedObject.countriesList[1])
+        else{
+            mutableStateOf(Currency("EUR","https://flagcdn.com/h60/eu.png",2))
+        }
     }
-    var list1 by remember {
+    var favList by remember {
         mutableStateOf(listOf<CurrencyRoomDBItem>())
     }
+    var listToCompare = mutableListOf<Int>()
     coroutineScope.launch {
-        list1 = repository.getAllFav()
+        favList = repository.getAllFav()
+        listToCompare.clear()
+        favList.forEach {
+            listToCompare.add(it.id)
+        }
+        println(listToCompare.size)
     }
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -98,7 +124,6 @@ fun ConvertScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
             ) {
-
                 TextShow(
                     text = "Amount",
                     color = CustomColor.black,
@@ -135,7 +160,7 @@ fun ConvertScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 DropDownShow(
                     base,
-                    currencyApi = list,
+                    countryApi = SharedObject.countriesList,
                     modifier = Modifier
                         .background(
                             color = Color(0xFFF9F9F9),
@@ -157,7 +182,8 @@ fun ConvertScreen(
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 12.dp)
                     .size(25.dp)
-                    .align(Alignment.CenterHorizontally).clickable {
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
                         val i = target
                         target = base
                         base = i
@@ -191,8 +217,8 @@ fun ConvertScreen(
             ) {
                 DropDownShow(
                     target,
-                    currencyApi = list.filter {
-                        it.currency != base.currency
+                    countryApi = SharedObject.countriesList.filter {
+                        it.currencyCode != base.currencyCode
                     },
                     modifier = Modifier
                         .background(
@@ -201,7 +227,7 @@ fun ConvertScreen(
                         )
                         .fillMaxWidth(.5f)
                 ) { selectedItem ->
-                        target = selectedItem
+                    target = selectedItem
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
@@ -221,7 +247,31 @@ fun ConvertScreen(
             }
 
             Button(
-                onClick = { /*TODO*/ }, modifier = Modifier
+                onClick = {
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        viewModel.convertCurrecny(
+                            base.currencyCode,
+                            target.currencyCode,
+                            amountValue.toDouble()
+                        )
+                        viewModel.flowForConvert.collectLatest {
+                            result = it.conversion_result.toString()
+                        }
+                    }
+                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                        viewModel.compare(CompareModelPost(1,base.id,listToCompare))
+                        viewModel.flowForCompare.collectLatest {
+                            val list = mutableListOf<String>()
+                            list.clear()
+                            it.compare_result.forEach {
+                                list.add(it.toString())
+                            }
+                            repository.updateRoom(list,listToCompare)
+                            favList = repository.getAllFav()
+                            println("hi $it $list")
+                        }
+                    }
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFF363636)),
@@ -291,7 +341,7 @@ fun ConvertScreen(
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(list1.size) { index ->
+                    items(favList.size) { index ->
                         Row(
                             Modifier
                                 .padding(10.dp)
@@ -299,12 +349,12 @@ fun ConvertScreen(
                         ) {
 
                             GlideImage(
-                                model = list1[index].countryFlag,
+                                model = favList[index].countryFlag,
                                 contentDescription = "image of currency",
                                 modifier = Modifier.size(42.dp)
                             ) {
                                 it.load(
-                                    list1[index].countryFlag
+                                    favList[index].countryFlag
                                 )
                                 it.placeholder(R.drawable.baseline_flag_24)
                                 it.error(R.drawable.baseline_dehaze_24)
@@ -313,13 +363,13 @@ fun ConvertScreen(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 TextShow(
-                                    text = list1[index].currency,
+                                    text = favList[index].currency,
                                     color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 15
                                 )
                                 TextShow(
-                                    text = list1[index].countryNameCode,
+                                    text = "Currency",
                                     color = Color(0xFFB8B8B8),
                                     fontFamily = FontFamily.Default,
                                     fontSize = 13
@@ -327,7 +377,7 @@ fun ConvertScreen(
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             TextShow(
-                                text = list1[index].amount,
+                                text = favList[index].amount,
                                 color = Color(0xFF121212),
                                 fontFamily = FontFamily.Default
                             )

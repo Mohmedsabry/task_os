@@ -30,14 +30,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.graduationproject.data.model.CurrencyApiItem
+import androidx.lifecycle.viewModelScope
+import com.example.graduationproject.data.model.CompareModelPost
+import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.ui.theme.CustomColor
+import com.example.graduationproject.presentation.viewmodels.SharedViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompareScreen() {
+    val viewModel = SharedViewModel()
     var amount by remember {
         mutableStateOf("")
     }
@@ -48,18 +55,17 @@ fun CompareScreen() {
         mutableStateOf("")
     }
     var targetSelected1 by remember {
-        mutableStateOf(list[1])
+        mutableStateOf(SharedObject.countriesList[1])
     }
     var targetSelected2 by remember {
-        mutableStateOf(list[2])
+        mutableStateOf(SharedObject.countriesList[2])
     }
     var base by remember {
-        mutableStateOf(list[0])
+        mutableStateOf(SharedObject.countriesList[0])
     }
     Column(Modifier.padding(30.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth()
-            ,
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
             TextShow(
@@ -102,7 +108,7 @@ fun CompareScreen() {
             )
             DropDownShow(
                 base,
-                currencyApi = list, modifier = Modifier
+                countryApi = SharedObject.countriesList, modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
             ) { selectedItem ->
@@ -150,8 +156,8 @@ fun CompareScreen() {
         ) {
             DropDownShow(
                 targetSelected1,
-                currencyApi = list.filter {
-                    it.currency != base.currency && it.currency != targetSelected2.currency
+                countryApi = SharedObject.countriesList.filter {
+                    it.currencyCode != base.currencyCode && it.currencyCode != targetSelected2.currencyCode
                 }, modifier = Modifier
                     .fillMaxWidth(.5f)
             ) { selectedItem ->
@@ -160,8 +166,8 @@ fun CompareScreen() {
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
                 targetSelected2,
-                currencyApi = list.filter {
-                    it.currency != base.currency && it.currency != targetSelected1.currency
+                countryApi = SharedObject.countriesList.filter {
+                    it.currencyCode != base.currencyCode && it.currencyCode != targetSelected1.currencyCode
                 }, modifier = Modifier
                     .fillMaxWidth(.5f)
                     .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
@@ -201,7 +207,21 @@ fun CompareScreen() {
         Spacer(modifier = Modifier.height(10.dp))
         Button(
             onClick = {
-
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    viewModel.compare(
+                        CompareModelPost(
+                            amount.toInt(),
+                            base.id,
+                            listOf(targetSelected1.id, targetSelected2.id)
+                        )
+                    )
+                    viewModel.flowForCompare.collectLatest {
+                        if (it.compare_result.isNotEmpty()) {
+                            targetValue1 = it.compare_result[0].toString()
+                            targetValue2 = it.compare_result[1].toString()
+                        }
+                    }
+                }
             },
             Modifier
                 .fillMaxWidth(),
@@ -215,14 +235,4 @@ fun CompareScreen() {
     }
 }
 
-val list = listOf(
-    CurrencyApiItem("https://flagcdn.com/h60/us.png", "USA", "USD", 1),
-    CurrencyApiItem("https://flagcdn.com/h60/eu.png", "EUR", "EUR", 2),
-    CurrencyApiItem("https://flagcdn.com/h60/gb.png", "UK", "GBP", 3),
-)
 
-fun String.swap(target: String) {
-    val s = this
-    this.replace(this, target)
-    target.replace(target, s)
-}
