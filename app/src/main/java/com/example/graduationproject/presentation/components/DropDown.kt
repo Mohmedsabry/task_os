@@ -28,14 +28,19 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.model.CurrencyApiItem
+import com.example.graduationproject.data.model.Currency
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun DropDownShow(currencyApiItem: CurrencyApiItem,currencyApi: List<CurrencyApiItem>, modifier: Modifier = Modifier,selectedItem:(selectText:CurrencyApiItem)->Unit) {
+fun DropDownShow(
+    currency: Currency,
+    countryApi: List<Currency>,
+    modifier: Modifier = Modifier,
+    selectedItem: (selectText: Currency) -> Unit
+) {
 
-    var text  = currencyApiItem.currency
-    var url = currencyApiItem.countryFlag
+    var text = currency.currencyCode
+    var url = currency.flagUrl
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -54,7 +59,11 @@ fun DropDownShow(currencyApiItem: CurrencyApiItem,currencyApi: List<CurrencyApiI
                 )
             },
             leadingIcon = {
-                GlideImage(model = url, contentDescription = "currency image",Modifier.size(30.dp)) {
+                GlideImage(
+                    model = url,
+                    contentDescription = "currency image",
+                    Modifier.size(30.dp)
+                ) {
                     it.load(url)
                     it.placeholder(R.drawable.baseline_flag_24)
                     it.error(R.drawable.baseline_dehaze_24)
@@ -67,25 +76,29 @@ fun DropDownShow(currencyApiItem: CurrencyApiItem,currencyApi: List<CurrencyApiI
         DropdownMenu(expanded = expanded, onDismissRequest = {
             expanded = false
         }) {
-            currencyApi.forEach { item ->
+            countryApi.forEach { item ->
                 DropdownMenuItem(text = {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        GlideImage(model = item.countryFlag, contentDescription = "",Modifier.size(30.dp)) {
-                            it.load(item.countryFlag)
+                        GlideImage(
+                            model = item.flagUrl,
+                            contentDescription = "",
+                            Modifier.size(30.dp)
+                        ) {
+                            it.load(item.flagUrl)
                             it.placeholder(R.drawable.baseline_flag_24)
                             it.error(R.drawable.baseline_dehaze_24)
                             it.circleCrop()
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = item.currency)
+                        Text(text = item.currencyCode)
                     }
                 }, onClick = {
-                    text = item.currency
+                    text = item.currencyCode
                     selectedItem.invoke(item)
-                    url = item.countryFlag
+                    url = item.flagUrl
                     expanded = false
                 })
             }

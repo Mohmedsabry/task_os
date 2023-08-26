@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,20 +18,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,19 +39,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.Repository
-import com.example.graduationproject.data.model.CurrencyApiItem
+import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
-import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.screen.CompareScreen
 import com.example.graduationproject.presentation.screens.BaseScreen
 import com.example.graduationproject.presentation.screens.ConvertScreen
 import com.example.graduationproject.presentation.ui.theme.CustomColor
 import com.example.graduationproject.presentation.ui.theme.GraduationProjectTheme
+import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -65,17 +60,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val context = LocalContext.current
             val repository = Repository()
-            /*
-            LaunchedEffect(key1 = ""){
-                SharedObject.initList(repository.getList())
-                println("${SharedObject.countriesList} from apiiii")
-            }
-
-             */
             GraduationProjectTheme {
                 var selectedScreenState by remember {
                     mutableStateOf("Convert")
@@ -83,41 +70,39 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .background(Color.White)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    BaseScreen() {
+                        selectedScreenState = it
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1F)
                     ) {
-                        BaseScreen() {
-                            selectedScreenState = it
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1F)
-                        ) {
-                            if (selectedScreenState == "Convert") {
-                                ConvertScreen(repository) {
-                                    //startActivity(Intent(context,AddToFav::class.java))
-                                    showBottomSheet = true
-                                }
-                            } else {
-                                CompareScreen()
+                        if (selectedScreenState == "Convert") {
+                            ConvertScreen(repository) {
+                                //startActivity(Intent(context,AddToFav::class.java))
+                                showBottomSheet = true
                             }
-                        }
-                        AnimatedVisibility(visible = showBottomSheet) {
-                            BottomSheetShow(repository) {
-                                showBottomSheet = false
-                            }
-
+                        } else {
+                            CompareScreen()
                         }
                     }
+                    AnimatedVisibility(visible = showBottomSheet) {
+                        BottomSheetShow(repository) {
+                            showBottomSheet = false
+                        }
 
+                    }
                 }
+
             }
         }
-
+    }
 
 
     @SuppressLint("CoroutineCreationDuringComposition")
@@ -128,8 +113,9 @@ class MainActivity : ComponentActivity() {
         var list2 by remember {
             mutableStateOf(listOf<CurrencyRoomDBItem>())
         }
-        coroutineScope.launch {
-            list2 = repository.getAllListForBottomSheet()
+        val viewModel: SharedViewModel by viewModels()
+        viewModel.viewModelScope.launch {
+            list2 = viewModel.getAllListForBottomSheet()
         }
         Dialog(onDismissRequest = {
             dismissAction.invoke()
@@ -201,7 +187,7 @@ class MainActivity : ComponentActivity() {
                                         fontSize = 13
                                     )
                                     TextShow(
-                                        text = list2[index].countryNameCode,
+                                        text = list2[index].currency,
                                         color = CustomColor.black,
                                         fontFamily = FontFamily.Default,
                                         fontSize = 11
@@ -253,13 +239,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
+
 }
 
 val list = listOf(
-    CurrencyApiItem("https://flagcdn.com/h60/us.png", "USA", "USD", 1),
-    CurrencyApiItem("https://flagcdn.com/h60/eu.png", "EUR", "EUR", 2),
-    CurrencyApiItem("https://flagcdn.com/h60/gb.png", "UK", "GBP", 3),
+    Currency(flagUrl = "https://flagcdn.com/h60/us.png", currencyCode = "USA", id = 1),
+    Currency(flagUrl ="https://flagcdn.com/h60/eu.png", currencyCode ="EUR",id = 2),
+    Currency(flagUrl ="https://flagcdn.com/h60/gb.png", currencyCode ="UK", id =3),
 )
 
 
