@@ -2,6 +2,7 @@ package com.example.graduationproject.data.presestance
 
 import android.content.Context
 import com.example.graduationproject.data.model.CurrencyApiItem
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
