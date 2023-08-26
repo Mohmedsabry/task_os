@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 @Entity("favourite")
 data class CurrencyRoomDBItem(
     val countryFlag: String,
-    val countryNameCode: String,
     val currency: String,
     @PrimaryKey
     val id: Int,

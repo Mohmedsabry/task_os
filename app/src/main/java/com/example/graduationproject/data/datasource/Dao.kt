@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
+import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 
 @Dao
@@ -19,4 +21,12 @@ interface Dao {
 
     @Query("select * from favourite where id =:id")
     suspend fun getFavById(id: Int): CurrencyRoomDBItem
+
+    @Query("update favourite set amount =:amount where id=:id")
+    fun updateRoom(amount:String,id:Int)
+     fun updateList(amounts:List<String>,intList:List<Int>){
+        for(i in amounts.indices){
+            updateRoom(amounts[i],intList[i])
+        }
+    }
 }
