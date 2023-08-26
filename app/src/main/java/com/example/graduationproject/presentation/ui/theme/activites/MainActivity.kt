@@ -18,12 +18,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+<<<<<<<<< Temporary merge branch 1
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+=========
+>>>>>>>>> Temporary merge branch 2
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+<<<<<<<<< Temporary merge branch 1
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+=========
+>>>>>>>>> Temporary merge branch 2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +75,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val repository = Repository()
+<<<<<<<<< Temporary merge branch 1
+            /*
+            LaunchedEffect(key1 = ""){
+                SharedObject.initList(repository.getList())
+                println("${SharedObject.countriesList} from apiiii")
+            }
+
+             */
+=========
+>>>>>>>>> Temporary merge branch 2
             GraduationProjectTheme {
                 var selectedScreenState by remember {
                     mutableStateOf("Convert")
@@ -70,36 +92,38 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                ) {
-                    BaseScreen() {
-                        selectedScreenState = it
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1F)
+                Surface() {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .background(Color.White)
                     ) {
-                        if (selectedScreenState == "Convert") {
-                            ConvertScreen(repository) {
-                                //startActivity(Intent(context,AddToFav::class.java))
-                                showBottomSheet = true
+                        BaseScreen() {
+                            selectedScreenState = it
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1F)
+                        ) {
+                            if (selectedScreenState == "Convert") {
+                                ConvertScreen(repository) {
+                                    //startActivity(Intent(context,AddToFav::class.java))
+                                    showBottomSheet = true
+                                }
+                            } else {
+                                CompareScreen()
                             }
-                        } else {
-                            CompareScreen()
                         }
-                    }
-                    AnimatedVisibility(visible = showBottomSheet) {
-                        BottomSheetShow(repository) {
-                            showBottomSheet = false
-                        }
+                        AnimatedVisibility(visible = showBottomSheet) {
+                            BottomSheetShow(repository) {
+                                showBottomSheet = false
+                            }
 
+                        }
                     }
+
                 }
-
             }
         }
     }
