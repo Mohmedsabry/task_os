@@ -65,7 +65,7 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(30.dp)
+                .padding(top=30.dp,bottom=30.dp,start =10.dp,end=10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_close_24),
@@ -90,7 +90,7 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                     fontFamily = FontFamily.Default,
                     fontSize = 17,
                     weight = 500,
-                    modifier = Modifier.padding(top = 29.dp, start = 10.dp)
+                    modifier = Modifier.padding(top = 29.dp, start = 20.dp)
                 )
                 LazyColumn(
                     modifier = Modifier

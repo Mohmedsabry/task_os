@@ -174,11 +174,11 @@ fun ConvertScreen(
                 }
             }
             Icon(
-                painter = painterResource(R.drawable.baseline_sync_24),
+                painter = painterResource(R.drawable.data_arrow_left_right),
                 contentDescription = "Swap Currency",
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 12.dp)
-                    .size(25.dp)
+                    .size(35.dp)
                     .align(Alignment.CenterHorizontally)
                     .clickable {
                         val i = target
@@ -254,8 +254,8 @@ fun ConvertScreen(
 //Toast here
                     if (amountValue.isNotEmpty() && amountValue.isNotBlank()) {
                         showLoading = true
+                        compare.invoke(1, base.id, listToCompare, true)
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
-                            compare.invoke(1, base.id, listToCompare, true)
                             viewModel.convertCurrecny(
                                 base.id,
                                 target.id,
@@ -305,16 +305,14 @@ fun ConvertScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
-                        // test=true
                         openAddToFav.invoke()
-
                     },
                     colors = ButtonDefaults.outlinedButtonColors(Color.White),
                     border = BorderStroke(1.dp, Color.Black),
                     shape = RoundedCornerShape(50)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+                        painter = painterResource(id = R.drawable.plus_1),
                         contentDescription = "Add to favourite", contentScale = ContentScale.None
                     )
                     Spacer(modifier = Modifier.width(10.dp))
