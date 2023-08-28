@@ -202,12 +202,16 @@ class MainActivity : ComponentActivity() {
                                             fontFamily = FontFamily.Default,
                                             fontSize = 15
                                         )
-                                        TextShow(
-                                            text = "Currency",
-                                            color = Color(0xFFB8B8B8),
-                                            fontFamily = FontFamily.Default,
-                                            fontSize = 13
-                                        )
+                                        Text(
+                                            text = "CURRENCY",
+                                            style = TextStyle(
+                                                fontSize = 11.56.sp,
+                                                lineHeight = 19.27.sp,
+                                                fontFamily = FontFamily(Font(R.font.poppins)),
+                                                fontWeight = FontWeight(400),
+                                                color = Color(0xFFB8B8B8),
+                                            )
+                                                )
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
                                     TextShow(

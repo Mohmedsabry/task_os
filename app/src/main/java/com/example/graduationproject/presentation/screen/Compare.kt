@@ -98,6 +98,7 @@ fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
                         color = Color(0xFFF9F9F9),
                         shape = RoundedCornerShape(size = 20.dp)
                     ),
+
                 value = amount, onValueChange = {
                     amount = it
                 },
@@ -203,6 +204,8 @@ fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
                     ),
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+                readOnly=true,
+                singleLine=true
             )
             Spacer(modifier = Modifier.width(10.dp))
             OutlinedTextField(
@@ -215,6 +218,8 @@ fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
                     ),
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+                readOnly=true,
+                singleLine = true
             )
         }
         Spacer(modifier = Modifier.height(10.dp))

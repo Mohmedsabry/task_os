@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -48,57 +46,46 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.model.CompareModelGet
-import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.presestance.SharedObject
-import com.example.graduationproject.domain.Repository
-import com.example.graduationproject.presentation.components.BottomSheet
 import com.example.graduationproject.presentation.components.DropDownShow
-import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.converter.gson.GsonConverterFactory
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun ConvertScreen(
-    compare:(amount:Int,baseId:Int,listToCompare:List<Int>,showLoading:Boolean)->Unit,
+    compare: (amount: Int, baseId: Int, listToCompare: List<Int>, showLoading: Boolean) -> Unit,
     openAddToFav: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-   val viewModel = SharedViewModel()
+    val viewModel = SharedViewModel()
     var amountValue by remember {
-        mutableStateOf("")
+        mutableStateOf("1")
     }
     var showLoading by remember { mutableStateOf(false) }
     var result by remember {
         mutableStateOf("1")
     }
     var base by remember {
-        if(SharedObject.countriesList.isNotEmpty())
+        if (SharedObject.countriesList.isNotEmpty())
             mutableStateOf(SharedObject.countriesList[0])
-        else{
-            mutableStateOf(Currency("USD","https://flagcdn.com/h60/us.png",1))
+        else {
+            mutableStateOf(Currency("USD", "https://flagcdn.com/h60/us.png", 1))
         }
     }
     var target by remember {
-        if(SharedObject.countriesList.isNotEmpty())
+        if (SharedObject.countriesList.isNotEmpty())
             mutableStateOf(SharedObject.countriesList[1])
-        else{
-            mutableStateOf(Currency("EUR","https://flagcdn.com/h60/eu.png",2))
+        else {
+            mutableStateOf(Currency("EUR", "https://flagcdn.com/h60/eu.png", 2))
         }
     }
     var favList by remember {
@@ -242,9 +229,9 @@ fun ConvertScreen(
                         ),
                     value = result, onValueChange = {},
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-                    enabled = false,
                     shape = RoundedCornerShape(20.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    readOnly=true
                 )
 
             }
@@ -253,8 +240,8 @@ fun ConvertScreen(
             Button(
                 onClick = {
 //Toast here
-                    if(amountValue.isNotEmpty()&&amountValue.isNotBlank()) {
-                        showLoading=true
+                    if (amountValue.isNotEmpty() && amountValue.isNotBlank()) {
+                        showLoading = true
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                             viewModel.convertCurrecny(
                                 base.id,
@@ -265,7 +252,7 @@ fun ConvertScreen(
                                 result = it.conversion_result.toString()
                             }
                         }
-                        compare.invoke(1,base.id,listToCompare,true)
+                        compare.invoke(1, base.id, listToCompare, true)
                     }
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -293,14 +280,10 @@ fun ConvertScreen(
                     fontSize = 18,
                     weight = 700
                 )
-             //   var test by remember{ mutableStateOf(false) }
-             //   if(test){
-             //       BottomSheet()
-            //    }
+
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
-                             // test=true
                         openAddToFav.invoke()
 
                     },
@@ -322,13 +305,13 @@ fun ConvertScreen(
                 }
             }
             TextShow(
-                    text = "My Portofolio",
-                    color = Color(0xFF121212),
-                    fontFamily = FontFamily.Default,
-                    fontSize = 20,
-                    weight = 400,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
+                text = "My Portofolio",
+                color = Color(0xFF121212),
+                fontFamily = FontFamily.Default,
+                fontSize = 20,
+                weight = 400,
+                modifier = Modifier.padding(10.dp)
+            )
         }
     }
+}
