@@ -2,7 +2,6 @@ package com.example.graduationproject.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.graduationproject.data.Repository
 import com.example.graduationproject.data.model.CompareModelGet
 import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.ConvertModel
@@ -10,14 +9,38 @@ import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyApiList
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.presestance.SharedObject
+import com.example.graduationproject.domain.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // main 3 fun
 class SharedViewModel : ViewModel() {
     private val repository = Repository()
+
+    // main handling room
+    val mutableFav = MutableStateFlow(emptyList<CurrencyRoomDBItem>())
+    val flow :StateFlow<List<CurrencyRoomDBItem>> = mutableFav
+    var list = mutableFav.value
+    fun updateFlow() {
+        viewModelScope.launch(Dispatchers.IO) {
+            mutableFav.value = repository.getAllFav()
+            list = mutableFav.value
+            println("list is $list")
+        }
+    }
+
+    suspend fun getAllFav():List<CurrencyRoomDBItem> = repository.getAllFav()
+    suspend fun updateRoom(amounts: List<String>, intList: List<Int>){
+        withContext(Dispatchers.IO){
+            repository.updateRoom(amounts, intList)
+        }
+    }
+    init {
+        updateFlow()
+    }
 
     // get list
     private val mutableFlowForList = MutableStateFlow(CurrencyApiList(emptyList()))
@@ -32,8 +55,8 @@ class SharedViewModel : ViewModel() {
     private val mutableFlowForConvert = MutableStateFlow(ConvertModel(0.0))
     val flowForConvert: StateFlow<ConvertModel> = mutableFlowForConvert
     fun convertCurrecny(
-        source: String,
-        target: String,
+        source: Int,
+        target: Int,
         amount: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {

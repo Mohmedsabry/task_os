@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,16 +67,20 @@ fun DropDownShow(
                 ) {
                     it.load(url)
                     it.placeholder(R.drawable.baseline_flag_24)
-                    it.error(R.drawable.baseline_dehaze_24)
+                    it.error(R.drawable.baseline_error_outline_24)
                     it.circleCrop()
                 }
             },
             modifier = modifier,
             shape = RoundedCornerShape(20.dp)
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = {
-            expanded = false
-        }) {
+        DropdownMenu(
+            expanded = expanded, onDismissRequest = {
+                expanded = false
+            }, modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
             countryApi.forEach { item ->
                 DropdownMenuItem(text = {
                     Row(
@@ -89,7 +94,7 @@ fun DropDownShow(
                         ) {
                             it.load(item.flagUrl)
                             it.placeholder(R.drawable.baseline_flag_24)
-                            it.error(R.drawable.baseline_dehaze_24)
+                            it.error(R.drawable.baseline_error_outline_24)
                             it.circleCrop()
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -102,6 +107,7 @@ fun DropDownShow(
                     expanded = false
                 })
             }
+
         }
     }
 }

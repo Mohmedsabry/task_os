@@ -1,4 +1,4 @@
-package com.example.graduationproject.presentation.ui.theme
+package com.example.graduationproject.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
