@@ -1,7 +1,8 @@
-package com.example.graduationproject.presentation.screen
+package com.example.graduationproject.presentation.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -194,9 +195,14 @@ fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
             horizontalArrangement = Arrangement.Start
         ) {
             OutlinedTextField(
-                value = targetValue1, onValueChange = {}, enabled = false,
+                value = targetValue1, onValueChange = {}, readOnly = false,
                 modifier = Modifier
                     .fillMaxWidth(.5f)
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xFFC5C5C5),
+                        RoundedCornerShape(size = 20.dp)
+                    )
                     .background(
                         color = Color(0xFFF9F9F9),
                         shape = RoundedCornerShape(size = 20.dp)
@@ -206,9 +212,15 @@ fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
             )
             Spacer(modifier = Modifier.width(10.dp))
             OutlinedTextField(
-                value = targetValue2, onValueChange = {}, enabled = false,
+                value = targetValue2, onValueChange = {}, readOnly = false,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xFFC5C5C5),
+                        RoundedCornerShape(size = 20.dp)
+                    )
+
                     .background(
                         color = Color(0xFFF9F9F9),
                         shape = RoundedCornerShape(size = 20.dp)

@@ -39,9 +39,8 @@ fun BaseScreen(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fraction = 0.26f), Alignment.TopEnd
+            .fillMaxHeight(fraction = 0.2f), Alignment.TopEnd
     ) {
-
         Image(
             painter = painterResource(id = R.drawable.img),
             contentDescription = "logo", contentScale = ContentScale.Crop,
@@ -53,7 +52,7 @@ fun BaseScreen(
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 30.dp, top = 15.dp),
+                .padding(start = 30.dp, top = 50.dp),
             text = "ConCurrency",
             style = TextStyle(
                 fontSize = 22.sp,
@@ -67,7 +66,7 @@ fun BaseScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 50.dp)
+                .padding(horizontal = 40.dp, vertical = 100.dp)
                 .padding(bottom = 10.dp, top = 20.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

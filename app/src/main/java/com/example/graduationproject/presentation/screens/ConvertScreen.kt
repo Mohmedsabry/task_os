@@ -4,24 +4,24 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,38 +48,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.model.CompareModelGet
-import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.presestance.SharedObject
-import com.example.graduationproject.domain.Repository
-import com.example.graduationproject.presentation.components.BottomSheet
 import com.example.graduationproject.presentation.components.DropDownShow
-import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.converter.gson.GsonConverterFactory
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun ConvertScreen(
-    compare:(amount:Int,baseId:Int,listToCompare:List<Int>,showLoading:Boolean)->Unit,
+    compare: (amount: Int, baseId: Int, listToCompare: List<Int>, showLoading: Boolean) -> Unit,
     openAddToFav: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-   val viewModel = SharedViewModel()
+    val viewModel = SharedViewModel()
     var amountValue by remember {
         mutableStateOf("")
     }
@@ -88,17 +77,17 @@ fun ConvertScreen(
         mutableStateOf("1")
     }
     var base by remember {
-        if(SharedObject.countriesList.isNotEmpty())
+        if (SharedObject.countriesList.isNotEmpty())
             mutableStateOf(SharedObject.countriesList[0])
-        else{
-            mutableStateOf(Currency("USD","https://flagcdn.com/h60/us.png",1))
+        else {
+            mutableStateOf(Currency("USD", "https://flagcdn.com/h60/us.png", 1))
         }
     }
     var target by remember {
-        if(SharedObject.countriesList.isNotEmpty())
+        if (SharedObject.countriesList.isNotEmpty())
             mutableStateOf(SharedObject.countriesList[1])
-        else{
-            mutableStateOf(Currency("EUR","https://flagcdn.com/h60/eu.png",2))
+        else {
+            mutableStateOf(Currency("EUR", "https://flagcdn.com/h60/eu.png", 2))
         }
     }
     var favList by remember {
@@ -148,11 +137,16 @@ fun ConvertScreen(
             ) {
                 OutlinedTextField(
                     modifier = Modifier
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
+                        )
                         .background(
                             color = Color(0xFFF9F9F9),
                             shape = RoundedCornerShape(size = 20.dp)
                         )
-                        .fillMaxWidth(.4f),
+                        .fillMaxWidth(.5f),
                     value = amountValue, onValueChange = {
                         amountValue = it
                     },
@@ -213,7 +207,6 @@ fun ConvertScreen(
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -239,11 +232,17 @@ fun ConvertScreen(
                         .background(
                             color = Color(0xFFF9F9F9),
                             shape = RoundedCornerShape(size = 20.dp)
+                        )
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
                         ),
                     value = result, onValueChange = {},
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-                    enabled = false,
+                    readOnly = false,
                     shape = RoundedCornerShape(20.dp),
+
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
 
@@ -253,9 +252,10 @@ fun ConvertScreen(
             Button(
                 onClick = {
 //Toast here
-                    if(amountValue.isNotEmpty()&&amountValue.isNotBlank()) {
-                        showLoading=true
+                    if (amountValue.isNotEmpty() && amountValue.isNotBlank()) {
+                        showLoading = true
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            compare.invoke(1, base.id, listToCompare, true)
                             viewModel.convertCurrecny(
                                 base.id,
                                 target.id,
@@ -265,7 +265,6 @@ fun ConvertScreen(
                                 result = it.conversion_result.toString()
                             }
                         }
-                        compare.invoke(1,base.id,listToCompare,true)
                     }
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -282,6 +281,12 @@ fun ConvertScreen(
                     )
                 )
             }
+            Divider(
+                Modifier
+                    .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
+                    .height(1.dp)
+                    .background(color = Color(0xFFE9E9E9))
+            )
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
@@ -293,14 +298,14 @@ fun ConvertScreen(
                     fontSize = 18,
                     weight = 700
                 )
-             //   var test by remember{ mutableStateOf(false) }
-             //   if(test){
-             //       BottomSheet()
-            //    }
+                //   var test by remember{ mutableStateOf(false) }
+                //   if(test){
+                //       BottomSheet()
+                //    }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
-                             // test=true
+                        // test=true
                         openAddToFav.invoke()
 
                     },
@@ -322,13 +327,13 @@ fun ConvertScreen(
                 }
             }
             TextShow(
-                    text = "My Portofolio",
-                    color = Color(0xFF121212),
-                    fontFamily = FontFamily.Default,
-                    fontSize = 20,
-                    weight = 400,
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
+                text = "My Portofolio",
+                color = Color(0xFF121212),
+                fontFamily = FontFamily.Default,
+                fontSize = 20,
+                weight = 400,
+                modifier = Modifier.padding(top = 10.dp)
+            )
         }
     }
+}
