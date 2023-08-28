@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -68,7 +70,7 @@ fun ConvertScreen(
     val coroutineScope = rememberCoroutineScope()
     val viewModel = SharedViewModel()
     var amountValue by remember {
-        mutableStateOf("1")
+        mutableStateOf("")
     }
     var showLoading by remember { mutableStateOf(false) }
     var result by remember {
@@ -135,11 +137,16 @@ fun ConvertScreen(
             ) {
                 OutlinedTextField(
                     modifier = Modifier
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
+                        )
                         .background(
                             color = Color(0xFFF9F9F9),
                             shape = RoundedCornerShape(size = 20.dp)
                         )
-                        .fillMaxWidth(.4f),
+                        .fillMaxWidth(.5f),
                     value = amountValue, onValueChange = {
                         amountValue = it
                     },
@@ -200,7 +207,6 @@ fun ConvertScreen(
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -226,12 +232,18 @@ fun ConvertScreen(
                         .background(
                             color = Color(0xFFF9F9F9),
                             shape = RoundedCornerShape(size = 20.dp)
+                        )
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
                         ),
                     value = result, onValueChange = {},
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
+                    readOnly = false,
                     shape = RoundedCornerShape(20.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    readOnly=true
+
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
 
             }
@@ -243,6 +255,7 @@ fun ConvertScreen(
                     if (amountValue.isNotEmpty() && amountValue.isNotBlank()) {
                         showLoading = true
                         viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            compare.invoke(1, base.id, listToCompare, true)
                             viewModel.convertCurrecny(
                                 base.id,
                                 target.id,
@@ -252,7 +265,6 @@ fun ConvertScreen(
                                 result = it.conversion_result.toString()
                             }
                         }
-                        compare.invoke(1, base.id, listToCompare, true)
                     }
                 }, modifier = Modifier
                     .fillMaxWidth()
@@ -269,6 +281,12 @@ fun ConvertScreen(
                     )
                 )
             }
+            Divider(
+                Modifier
+                    .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
+                    .height(1.dp)
+                    .background(color = Color(0xFFE9E9E9))
+            )
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
@@ -280,10 +298,14 @@ fun ConvertScreen(
                     fontSize = 18,
                     weight = 700
                 )
-
+                //   var test by remember{ mutableStateOf(false) }
+                //   if(test){
+                //       BottomSheet()
+                //    }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
+                        // test=true
                         openAddToFav.invoke()
 
                     },
@@ -310,7 +332,7 @@ fun ConvertScreen(
                 fontFamily = FontFamily.Default,
                 fontSize = 20,
                 weight = 400,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(top = 10.dp)
             )
         }
     }

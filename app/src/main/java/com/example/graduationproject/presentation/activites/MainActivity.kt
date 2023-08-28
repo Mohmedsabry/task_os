@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +21,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,13 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -53,7 +52,8 @@ import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.domain.Repository
 import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.screen.CompareScreen
+import com.example.graduationproject.presentation.components.dailogShow
+import com.example.graduationproject.presentation.screens.CompareScreen
 import com.example.graduationproject.presentation.screens.BaseScreen
 import com.example.graduationproject.presentation.screens.ConvertScreen
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
@@ -74,12 +74,12 @@ class MainActivity : ComponentActivity() {
             val repository = Repository()
             val coroutineScope = rememberCoroutineScope()
             val viewModel = SharedViewModel()
+            var showLoading by remember {
+                mutableStateOf(false)
+            }
             GraduationProjectTheme {
                 var favList by remember {
                     mutableStateOf(listOf<CurrencyRoomDBItem>())
-                }
-                var showLoading by remember {
-                    mutableStateOf(false)
                 }
                 var listToCompare = mutableListOf<Int>()
                 coroutineScope.launch {
@@ -113,7 +113,6 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Red)
                 ) {
-
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -122,7 +121,6 @@ class MainActivity : ComponentActivity() {
                         item {
                             BaseScreen() {
                                 selectedScreenState = it
-                                println(it)
                             }
                         }
                         item {
@@ -132,6 +130,10 @@ class MainActivity : ComponentActivity() {
                                 if (selectedScreenState == "Convert") {
                                     ConvertScreen({ amount, baseId, listToCompare, showload ->
                                         showLoading = showload
+                                        coroutineScope.launch {
+                                            delay(1000)
+                                            showLoading = false
+                                        }
                                         viewModel.viewModelScope.launch(Dispatchers.IO) {
                                             viewModel.compare(
                                                 CompareModelPost(
@@ -147,23 +149,18 @@ class MainActivity : ComponentActivity() {
                                 } else {
                                     CompareScreen { showload ->
                                         showLoading = showload
+                                        coroutineScope.launch {
+                                            delay(1000)
+                                            showLoading = false
+                                        }
                                     }
                                 }
-                                if (showLoading) {
-                                    Loading(
-                                        isDisplayed = showLoading,
-                                        modifier = Modifier.align(Alignment.Center)
-                                    )
-                                    coroutineScope.launch {
-                                        delay(1000)
-                                        showLoading = false
-                                    }
-                                }
+
                             }
                         }
                         item {
                             AnimatedVisibility(visible = showBottomSheet) {
-                                BottomSheetShow(repository) {
+                                dailogShow(repository) {
                                     showBottomSheet = false
                                     viewModel.viewModelScope.launch {
                                         favList = viewModel.getAllFav()
@@ -179,7 +176,7 @@ class MainActivity : ComponentActivity() {
                             items(favList.size) { index ->
                                 Row(
                                     Modifier
-                                        .padding(10.dp)
+                                        .padding(start = 24.dp, end = 24.dp, top = 16.dp)
                                         .fillMaxWidth()
                                 ) {
                                     GlideImage(
@@ -225,150 +222,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
-        }
-    }
-
-
-    @SuppressLint("CoroutineCreationDuringComposition")
-    @OptIn(ExperimentalGlideComposeApi::class)
-    @Composable
-    private fun BottomSheetShow(repository: Repository, dismissAction: () -> Unit) {
-        val coroutineScope = rememberCoroutineScope()
-        var list2 by remember {
-            mutableStateOf(listOf<CurrencyRoomDBItem>())
-        }
-        val viewModel: SharedViewModel by viewModels()
-        viewModel.viewModelScope.launch {
-            list2 = viewModel.getAllListForBottomSheet()
-        }
-        Dialog(onDismissRequest = {
-            dismissAction.invoke()
-        }) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(20.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_close_24),
-                    contentDescription = "close activity",
-                    modifier = Modifier
-                        .clickable {
-                            dismissAction.invoke()
-                        }
-                        .align(Alignment.End)
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Card(
-                    shape = CardDefaults.outlinedShape,
-                    colors = CardDefaults.cardColors(CustomColor.lightGray),
-                    modifier = Modifier.background(CustomColor.lightGray,shape = RoundedCornerShape(size = 20.dp))
-                        .padding(10.dp)
-                        .align(Alignment.Start)
-                ) {
-                    TextShow(
-                        text = "My Favorites",
-                        color = Color(0xff121212),
-                        fontFamily = FontFamily.Default,
-                        fontSize = 17,
-                        weight = 500,
-                        modifier = Modifier.padding(20.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    ) {
-                        items(list2.size) { index ->
-                            Row(
-                                Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                var isCheck by remember {
-                                    mutableStateOf(list2[index].flag)
-                                }
-                                GlideImage(
-                                    model = list2[index].countryFlag,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(42.dp)
-                                ) {
-                                    it.load(
-                                        list2[index].countryFlag
-                                    )
-                                    it.placeholder(R.drawable.baseline_flag_24)
-                                    it.error(R.drawable.baseline_dehaze_24)
-                                    it.circleCrop()
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column {
-                                    TextShow(
-                                        text = list2[index].currency,
-                                        color = CustomColor.black,
-                                        fontFamily = FontFamily.Default,
-                                        fontSize = 13
-                                    )
-                                    Text(
-                                        text = "CURRENCY",
-                                        style = TextStyle(
-                                            fontSize = 11.56.sp,
-                                            lineHeight = 19.27.sp,
-                                            fontFamily = FontFamily(Font(R.font.poppins)),
-                                            fontWeight = FontWeight(400),
-                                            color = Color(0xFFB8B8B8),
-                                        )
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Box(modifier = Modifier
-                                    .clickable {
-                                        isCheck = !isCheck
-                                    }
-                                    .size(25.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isCheck) {
-                                        Icon(
-                                            modifier = Modifier.size(30.dp),
-                                            painter = painterResource(id = R.drawable.grop),
-                                            contentDescription = "checked"
-                                        )
-                                    } else {
-                                        Icon(
-                                            modifier = Modifier.size(30.dp),
-                                            painter = painterResource(id = R.drawable.ellipse),
-                                            contentDescription = "checked"
-                                        )
-
-                                    }
-                                }
-                                if (isCheck) {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.insertRoom(list2[index])
-                                        println("${repository.getAllFav().size} insert")
-                                        viewModel.updateFlow()
-                                    }
-                                } else {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.deleteRoom(list2[index])
-                                        println("${repository.getAllFav().size} delete")
-                                        viewModel.updateFlow()
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
+            if (showLoading) {
+                println("$showLoading")
+                Loading()
             }
         }
-
     }
+
+
+
 
 }
 
