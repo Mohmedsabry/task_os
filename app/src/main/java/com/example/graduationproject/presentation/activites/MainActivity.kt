@@ -33,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -105,117 +104,114 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Box(modifier = Modifier.fillMaxSize().background(Color.Red)) {
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.White)
-                    ) {
-                        item {
-                            BaseScreen() {
-                                selectedScreenState = it
-                                println(it)
-                            }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    item {
+                        BaseScreen() {
+                            selectedScreenState = it
+                            println(it)
                         }
-                        item {
-                            Box(
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                if (selectedScreenState == "Convert") {
-                                    ConvertScreen({ amount, baseId, listToCompare, showload ->
-                                        showLoading = showload
-                                        viewModel.viewModelScope.launch(Dispatchers.IO) {
-                                            viewModel.compare(
-                                                CompareModelPost(
-                                                    1,
-                                                    baseId,
-                                                    listToCompare
-                                                )
+                    }
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            if (selectedScreenState == "Convert") {
+                                ConvertScreen({ amount, baseId, listToCompare, showload ->
+                                    showLoading = showload
+                                    viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                        viewModel.compare(
+                                            CompareModelPost(
+                                                1,
+                                                baseId,
+                                                listToCompare
                                             )
-                                        }
-                                    }) {
-                                        showBottomSheet = true
+                                        )
                                     }
-                                } else {
-                                    CompareScreen { showload ->
-                                        showLoading = showload
-                                    }
+                                }) {
+                                    showBottomSheet = true
                                 }
-                                if (showLoading) {
-                                    Loading(
-                                        isDisplayed = showLoading,
-                                        modifier = Modifier.align(Alignment.Center)
-                                    )
-                                    coroutineScope.launch {
-                                        delay(1000)
-                                        showLoading = false
+                            } else {
+                                CompareScreen { showload ->
+                                    showLoading = showload
+                                }
+                            }
+                            if (showLoading) {
+                                Loading(
+                                    isDisplayed = showLoading,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                                coroutineScope.launch {
+                                    delay(1000)
+                                    showLoading = false
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        AnimatedVisibility(visible = showBottomSheet) {
+                            BottomSheetShow(repository) {
+                                showBottomSheet = false
+                                viewModel.viewModelScope.launch {
+                                    favList = viewModel.getAllFav()
+                                    listToCompare.clear()
+                                    favList.forEach {
+                                        listToCompare.add(it.id)
                                     }
                                 }
                             }
                         }
-                        item {
-                            AnimatedVisibility(visible = showBottomSheet) {
-                                BottomSheetShow(repository) {
-                                    showBottomSheet = false
-                                    viewModel.viewModelScope.launch {
-                                        favList = viewModel.getAllFav()
-                                        listToCompare.clear()
-                                        favList.forEach {
-                                            listToCompare.add(it.id)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (selectedScreenState == "Convert") {
-                            items(favList.size) { index ->
-                                Row(
-                                    Modifier
-                                        .padding(10.dp)
-                                        .fillMaxWidth()
+                    }
+                    if (selectedScreenState == "Convert") {
+                        items(favList.size) { index ->
+                            Row(
+                                Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                GlideImage(
+                                    model = favList[index].countryFlag,
+                                    contentDescription = "image of currency",
+                                    modifier = Modifier.size(42.dp)
                                 ) {
-                                    GlideImage(
-                                        model = favList[index].countryFlag,
-                                        contentDescription = "image of currency",
-                                        modifier = Modifier.size(42.dp)
-                                    ) {
-                                        it.load(
-                                            favList[index].countryFlag
-                                        )
-                                        it.placeholder(R.drawable.baseline_flag_24)
-                                        it.error(R.drawable.baseline_dehaze_24)
-                                        it.circleCrop()
-                                    }
-                                    Spacer(modifier = Modifier.width(10.dp))
-                                    Column {
-                                        TextShow(
-                                            text = favList[index].currency,
-                                            color = CustomColor.black,
-                                            fontFamily = FontFamily.Default,
-                                            fontSize = 15
-                                        )
-                                        TextShow(
-                                            text = "Currency",
-                                            color = Color(0xFFB8B8B8),
-                                            fontFamily = FontFamily.Default,
-                                            fontSize = 13
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.weight(1f))
+                                    it.load(
+                                        favList[index].countryFlag
+                                    )
+                                    it.placeholder(R.drawable.baseline_flag_24)
+                                    it.error(R.drawable.baseline_dehaze_24)
+                                    it.circleCrop()
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column {
                                     TextShow(
-                                        text = favList[index].amount,
-                                        color = Color(0xFF121212),
-                                        fontFamily = FontFamily.Default
+                                        text = favList[index].currency,
+                                        color = CustomColor.black,
+                                        fontFamily = FontFamily.Default,
+                                        fontSize = 15
+                                    )
+                                    TextShow(
+                                        text = "Currency",
+                                        color = Color(0xFFB8B8B8),
+                                        fontFamily = FontFamily.Default,
+                                        fontSize = 13
                                     )
                                 }
+                                Spacer(modifier = Modifier.weight(1f))
+                                TextShow(
+                                    text = favList[index].amount,
+                                    color = Color(0xFF121212),
+                                    fontFamily = FontFamily.Default
+                                )
                             }
                         }
                     }
                 }
             }
-
         }
+
     }
 
 
@@ -354,20 +350,20 @@ class MainActivity : ComponentActivity() {
 
     }
 
-}
 
-val list = listOf(
-    Currency(flagUrl = "https://flagcdn.com/h60/us.png", currencyCode = "USA", id = 1),
-    Currency(flagUrl = "https://flagcdn.com/h60/eu.png", currencyCode = "EUR", id = 2),
-    Currency(flagUrl = "https://flagcdn.com/h60/gb.png", currencyCode = "UK", id = 3),
-)
+    val list = listOf(
+        Currency(flagUrl = "https://flagcdn.com/h60/us.png", currencyCode = "USA", id = 1),
+        Currency(flagUrl = "https://flagcdn.com/h60/eu.png", currencyCode = "EUR", id = 2),
+        Currency(flagUrl = "https://flagcdn.com/h60/gb.png", currencyCode = "UK", id = 3),
+    )
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GraduationProjectTheme {
+    @Preview(showBackground = true)
+    @Composable
+    fun GreetingPreview() {
+        GraduationProjectTheme {
 
+        }
     }
 }
 // dimensionResource(id = R.dimen._17sdp)
