@@ -1,5 +1,9 @@
 package com.example.graduationproject.presentation.components
 
+import com.example.graduationproject.ui.theme.CustomColor
+
+
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.graduationproject.presentation.ui.theme.CustomColor
+//import com.example.graduationproject.presentation.ui.theme.CustomColor
 import androidx.compose.ui.unit.Dp as Dp1
 @Preview
 @Composable
@@ -118,7 +123,7 @@ private fun MyTabItem(
                 horizontal = 12.dp,
             ),
         text = text,
-        color =CustomColor.textBlack,
+        color = CustomColor.textBlack,
         textAlign = TextAlign.Center,
     )
 }
@@ -144,4 +149,18 @@ private fun MyTabIndicator(
                 color = indicatorColor,
             ),
     )
+}
+@Composable
+fun Test1(){
+
+
+
+
+
+
+
+
+
+
+
 }

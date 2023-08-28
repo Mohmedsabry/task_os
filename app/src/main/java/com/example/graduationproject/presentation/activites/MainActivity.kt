@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -105,7 +106,9 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Box(modifier = Modifier.fillMaxSize().background(Color.Red)) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Red)) {
 
                     LazyColumn(
                         modifier = Modifier
@@ -248,8 +251,8 @@ class MainActivity : ComponentActivity() {
                             dismissAction.invoke()
                         }
                         .align(Alignment.End)
-                        .padding(bottom = 20.dp)
                 )
+                Spacer(modifier = Modifier.height(30.dp))
                 Card(
                     shape = CardDefaults.outlinedShape,
                     colors = CardDefaults.cardColors(CustomColor.lightGray),
@@ -309,27 +312,24 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Spacer(modifier = Modifier.weight(1f))
-                                Card(
-                                    colors = CardDefaults.cardColors(Color.Black),
-                                    elevation = CardDefaults.cardElevation(0.dp),
-                                    shape = RoundedCornerShape((12.dp)),
-                                ) {
+
                                     Box(modifier = Modifier
-                                        .background(
-                                            if (isCheck) Color.Black else Color.LightGray
-                                        )
                                         .clickable {
                                             isCheck = !isCheck
                                         }
                                         .size(25.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        if (isCheck)
-                                            Icon(
-                                                Icons.Default.Check,
-                                                contentDescription = "check",
-                                                tint = Color.White
+                                        if (isCheck) {
+                                            Icon(modifier=Modifier.size(30.dp),
+                                                painter = painterResource(id = R.drawable.grop),
+                                                contentDescription = "checked"
                                             )
+                                        }else{
+                                            Icon(modifier=Modifier.size(30.dp),
+                                                painter = painterResource(id = R.drawable.ellipse), contentDescription ="checked" )
+
+                                        }
                                     }
                                     if (isCheck) {
                                         coroutineScope.launch(Dispatchers.IO) {
@@ -345,7 +345,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 }
-                            }
+
                         }
                     }
                 }
