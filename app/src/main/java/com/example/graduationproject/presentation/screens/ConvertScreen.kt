@@ -111,7 +111,7 @@ var showLoading by remember { mutableStateOf(false) }
         favList.forEach {
             listToCompare.add(it.id)
         }
-        println(listToCompare.size)
+        println("${listToCompare.size} $favList fasvvvvvv")
     }
     if(showLoading) {
         Loading(isDisplayed = showLoading)
@@ -370,7 +370,6 @@ var showLoading by remember { mutableStateOf(false) }
                                 .padding(10.dp)
                                 .fillMaxWidth()
                         ) {
-
                             GlideImage(
                                 model = favList[index].countryFlag,
                                 contentDescription = "image of currency",

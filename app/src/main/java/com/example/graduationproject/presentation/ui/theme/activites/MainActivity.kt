@@ -73,36 +73,38 @@ class MainActivity : ComponentActivity() {
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Surface( modifier = Modifier
-                    .fillMaxSize()){
-                Column(
+                Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .background(Color.White)
                 ) {
-                    BaseScreen() {
-                        selectedScreenState = it
-                    }
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1F)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .background(Color.White)
                     ) {
-                        if (selectedScreenState == "Convert") {
-                            ConvertScreen(repository) {
-                                //startActivity(Intent(context,AddToFav::class.java))
-                                showBottomSheet = true
+                        BaseScreen() {
+                            selectedScreenState = it
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1F)
+                        ) {
+                            if (selectedScreenState == "Convert") {
+                                ConvertScreen(repository) {
+                                    //startActivity(Intent(context,AddToFav::class.java))
+                                    showBottomSheet = true
+                                }
+                            } else {
+                                CompareScreen()
                             }
-                        } else {
-                            CompareScreen()
                         }
-                    }
-                    AnimatedVisibility(visible = showBottomSheet) {
-                        BottomSheetShow(repository) {
-                            showBottomSheet = false
+                        AnimatedVisibility(visible = showBottomSheet) {
+                            BottomSheetShow(repository) {
+                                showBottomSheet = false
+                            }
                         }
-                    }
                     }
                 }
 
@@ -252,8 +254,8 @@ class MainActivity : ComponentActivity() {
 
 val list = listOf(
     Currency(flagUrl = "https://flagcdn.com/h60/us.png", currencyCode = "USA", id = 1),
-    Currency(flagUrl ="https://flagcdn.com/h60/eu.png", currencyCode ="EUR",id = 2),
-    Currency(flagUrl ="https://flagcdn.com/h60/gb.png", currencyCode ="UK", id =3),
+    Currency(flagUrl = "https://flagcdn.com/h60/eu.png", currencyCode = "EUR", id = 2),
+    Currency(flagUrl = "https://flagcdn.com/h60/gb.png", currencyCode = "UK", id = 3),
 )
 
 
