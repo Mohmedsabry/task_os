@@ -56,11 +56,14 @@ import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.presestance.SharedObject
+import com.example.graduationproject.presentation.components.BottomSheet
 import com.example.graduationproject.presentation.components.DropDownShow
+import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.ui.theme.CustomColor
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -80,7 +83,7 @@ fun ConvertScreen(
     var amountValue by remember {
         mutableStateOf("")
     }
-
+var showLoading by remember { mutableStateOf(false) }
     var result by remember {
         mutableStateOf("1")
     }
@@ -110,6 +113,15 @@ fun ConvertScreen(
         }
         println(listToCompare.size)
     }
+    if(showLoading) {
+        Loading(isDisplayed = showLoading)
+
+        coroutineScope.launch {
+            delay(3000)
+            showLoading = false
+        }
+    }
+    else{
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(Color.White)
@@ -246,29 +258,34 @@ fun ConvertScreen(
 
             }
 
+
             Button(
                 onClick = {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.convertCurrecny(
-                            base.currencyCode,
-                            target.currencyCode,
-                            amountValue.toDouble()
-                        )
-                        viewModel.flowForConvert.collectLatest {
-                            result = it.conversion_result.toString()
-                        }
-                    }
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.compare(CompareModelPost(1,base.id,listToCompare))
-                        viewModel.flowForCompare.collectLatest {
-                            val list = mutableListOf<String>()
-                            list.clear()
-                            it.compare_result.forEach {
-                                list.add(it.toString())
+//Toast here
+                    if(amountValue.isNotEmpty()&&amountValue.isNotBlank()) {
+                        showLoading=true
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            viewModel.convertCurrecny(
+                                base.currencyCode,
+                                target.currencyCode,
+                                amountValue.toDouble()
+                            )
+                            viewModel.flowForConvert.collectLatest {
+                                result = it.conversion_result.toString()
                             }
-                            repository.updateRoom(list,listToCompare)
-                            favList = repository.getAllFav()
-                            println("hi $it $list")
+                        }
+                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                            viewModel.compare(CompareModelPost(1, base.id, listToCompare))
+                            viewModel.flowForCompare.collectLatest {
+                                val list = mutableListOf<String>()
+                                list.clear()
+                                it.compare_result.forEach {
+                                    list.add(it.toString())
+                                }
+                                repository.updateRoom(list, listToCompare)
+                                favList = repository.getAllFav()
+                                println("hi $it $list")
+                            }
                         }
                     }
                 }, modifier = Modifier
@@ -297,10 +314,16 @@ fun ConvertScreen(
                     fontSize = 18,
                     weight = 700
                 )
+             //   var test by remember{ mutableStateOf(false) }
+             //   if(test){
+             //       BottomSheet()
+            //    }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
+                             // test=true
                         openAddToFav.invoke()
+
                     },
                     colors = ButtonDefaults.outlinedButtonColors(Color.White),
                     border = BorderStroke(1.dp, Color.Black),
@@ -388,4 +411,4 @@ fun ConvertScreen(
         }
     }
 
-}
+}}

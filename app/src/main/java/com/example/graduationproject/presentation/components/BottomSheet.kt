@@ -1,9 +1,7 @@
-package com.example.graduationproject.presentation.ui.theme.activites
+package com.example.graduationproject.presentation.components
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
+import android.annotation.SuppressLint
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,63 +15,85 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.presestance.SharedObject
-import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.ui.theme.activites.ui.theme.GraduationProjectTheme
-
-class AddToFav : ComponentActivity() {
-    @OptIn(ExperimentalGlideComposeApi::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            GraduationProjectTheme {
-
+import com.example.graduationproject.data.Repository
+import com.example.graduationproject.data.model.CurrencyRoomDBItem
+import com.example.graduationproject.presentation.ui.theme.CustomColor
+import com.example.graduationproject.presentation.viewmodels.SharedViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+@SuppressLint("CoroutineCreationDuringComposition")
+@Preview
+@OptIn(ExperimentalMaterialApi::class, ExperimentalGlideComposeApi::class)
+@Composable
+fun BottomSheet() {
+    val repository=Repository()
+    val scope= rememberCoroutineScope()
+    val bottomSheetState= rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    ModalBottomSheetLayout(
+        sheetState=bottomSheetState,
+        sheetContent = {
+            //TODO CONTENT here
+            val coroutineScope = rememberCoroutineScope()
+            var list2 by remember {
+                mutableStateOf(listOf<CurrencyRoomDBItem>())
+            }
+            val viewModel: SharedViewModel= SharedViewModel()
+            viewModel.viewModelScope.launch {
+                list2 = viewModel.getAllListForBottomSheet()
+            }
+          //  Dialog(onDismissRequest = {
+              //  dismissAction.invoke()
+           // })
+   // {
                 Column(
                     Modifier
                         .fillMaxWidth()
                         .background(Color.White)
-                        .padding(start = 10.dp, top = 30.dp, end = 10.dp, bottom = 100.dp)
+                        .padding(20.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_close_24),
                         contentDescription = "close activity",
                         modifier = Modifier
                             .clickable {
-                                finish()
-                                println("finish")
+                          //      dismissAction.invoke()
                             }
                             .align(Alignment.End)
-                            .padding(20.dp)
+                            .padding(bottom = 20.dp)
                     )
                     Card(
                         shape = CardDefaults.outlinedShape,
-                        colors = CardDefaults.cardColors(Color(0xFFF8F8F8)),
+                        colors = CardDefaults.cardColors(CustomColor.lightGray),
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Alignment.Start)
@@ -86,29 +106,28 @@ class AddToFav : ComponentActivity() {
                             weight = 500,
                             modifier = Modifier.padding(20.dp)
                         )
-
                         LazyColumn(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .fillMaxSize()
                                 .padding(10.dp)
                         ) {
-                            items(10) {
+                            items(list2.size) { index ->
                                 Row(
                                     Modifier
                                         .padding(10.dp)
                                         .fillMaxWidth()
                                 ) {
                                     var isCheck by remember {
-                                        mutableStateOf(false)
+                                        mutableStateOf(list2[index].flag)
                                     }
                                     GlideImage(
-                                        model = SharedObject.url,
+                                        model = list2[index].countryFlag,
                                         contentDescription = "",
                                         modifier = Modifier.size(42.dp)
                                     ) {
                                         it.load(
-                                            SharedObject.url
+                                            list2[index].countryFlag
                                         )
                                         it.placeholder(R.drawable.baseline_flag_24)
                                         it.error(R.drawable.baseline_dehaze_24)
@@ -116,38 +135,29 @@ class AddToFav : ComponentActivity() {
                                     }
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column {
-                                        Text(
-                                            text = "USD",
-                                            style = TextStyle(
-                                                fontSize = 13.49.sp,
-                                                lineHeight = 23.12.sp,
-                                                fontFamily = FontFamily(Font(R.font.poppins)),
-                                                fontWeight = FontWeight(400),
-                                                color = Color(0xFF121212),
-                                            )
+                                        TextShow(
+                                            text = list2[index].currency,
+                                            color = CustomColor.black,
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 13
                                         )
-                                        Text(
-                                            text = "CURRENCY",
-                                            style = TextStyle(
-                                                fontSize = 11.56.sp,
-                                                lineHeight = 19.27.sp,
-                                                fontFamily = FontFamily(Font(R.font.poppins)),
-                                                fontWeight = FontWeight(400),
-                                                color = Color(0xFFB8B8B8),
-                                            )
+                                        TextShow(
+                                            text = list2[index].currency,
+                                            color = CustomColor.black,
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 11
                                         )
                                     }
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Card(
-                                        border = BorderStroke(1.dp, Color(0xFFB8B8B8)),
-                                        colors = CardDefaults.cardColors(Color(0xFFB8B8B8)),
+                                        colors = CardDefaults.cardColors(Color.Black),
                                         elevation = CardDefaults.cardElevation(0.dp),
                                         shape = RoundedCornerShape((12.dp)),
                                     ) {
                                         Box(modifier = Modifier
                                             .background(
-                                                if (isCheck) Color.Black else Color.White
+                                                if (isCheck) Color.Black else Color.LightGray
                                             )
                                             .clickable {
                                                 isCheck = !isCheck
@@ -158,20 +168,55 @@ class AddToFav : ComponentActivity() {
                                             if (isCheck)
                                                 Icon(
                                                     Icons.Default.Check,
-                                                    contentDescription = "",
+                                                    contentDescription = "check",
                                                     tint = Color.White
                                                 )
                                         }
+                                        if (isCheck) {
+                                            coroutineScope.launch(Dispatchers.IO) {
+                                                repository.insertRoom(list2[index])
+                                                println("${repository.getAllFav().size} insert")
+                                            }
+                                        } else {
+                                            coroutineScope.launch(Dispatchers.IO) {
+                                                repository.deleteRoom(list2[index])
+                                                println("${repository.getAllFav().size} delete")
+                                            }
+                                        }
+                                        coroutineScope.launch {
+                                            println("${repository.getFavById(list2[index].id)} get item")
+                                        }
+
                                     }
                                 }
                             }
                         }
                     }
-                }
-            }
 
+            }
+        },
+        sheetShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+        sheetElevation = 12.dp,
+        modifier = Modifier.padding(20.dp)
+    ) {
+MainContent(scope, bottomSheetState)
+    }
+}
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MainContent(scope:CoroutineScope,bottomSheetState:ModalBottomSheetState){
+//Button when click show bottom sheet
+    Button(modifier=Modifier.fillMaxWidth(), onClick = {
+        scope.launch{
+            bottomSheetState.show()
         }
     }
+    ){
 
+    }
+}
+@Preview
+@Composable
+fun Test(){
 
 }
