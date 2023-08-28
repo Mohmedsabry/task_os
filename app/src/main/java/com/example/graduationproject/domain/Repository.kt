@@ -1,4 +1,4 @@
-package com.example.graduationproject.data
+package com.example.graduationproject.domain
 
 import com.example.graduationproject.data.datasource.RoomDB
 import com.example.graduationproject.data.model.CompareModelGet
@@ -8,7 +8,6 @@ import com.example.graduationproject.data.model.CurrencyApiList
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.network.NetworkService
 import com.example.graduationproject.data.presestance.SharedObject
-import retrofit2.Call
 
 class Repository {
     private val roomDao = RoomDB.getInstance().getDao()
@@ -17,8 +16,8 @@ class Repository {
 
     //retrofit
     suspend fun convert(
-        source: String,
-        target: String,
+        source: Int,
+        target: Int,
         amount: Double
     ): ConvertModel = networkService.convert(source, target, amount)
 
