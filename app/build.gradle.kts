@@ -102,4 +102,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.2")
     implementation ("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation ("androidx.compose.material3:material3:1.0.1")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
 }

@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 // main 3 fun
 class SharedViewModel : ViewModel() {
     private val repository = Repository()
+    var showLoading = false
 
     // main handling room
     val mutableFav = MutableStateFlow(emptyList<CurrencyRoomDBItem>())
