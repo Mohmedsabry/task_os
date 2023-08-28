@@ -32,6 +32,12 @@ class SharedViewModel : ViewModel() {
             println("list is $list")
         }
     }
+    suspend fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem){
+        repository.insertRoom(currencyRoomDBItem)
+    }
+    suspend fun deleteRoom(currencyRoomDBItem: CurrencyRoomDBItem){
+        repository.deleteRoom(currencyRoomDBItem)
+    }
 
     suspend fun getAllFav():List<CurrencyRoomDBItem> = repository.getAllFav()
     suspend fun updateRoom(amounts: List<String>, intList: List<Int>){
