@@ -1,4 +1,4 @@
-package com.example.graduationproject.presentation
+package com.example.graduationproject.presentation.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.example.graduationproject.presentation.ui.theme.activites.ui.theme
+package com.example.graduationproject.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -23,7 +23,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = Color.Black,
     secondary = PurpleGrey40,
     tertiary = Pink40
 
@@ -58,7 +58,7 @@ fun GraduationProjectTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.LightGray.toArgb()
+            window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

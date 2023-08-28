@@ -18,16 +18,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,8 +33,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,69 +44,177 @@ import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.Repository
+import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
+import com.example.graduationproject.domain.Repository
+import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.screen.CompareScreen
 import com.example.graduationproject.presentation.screens.BaseScreen
 import com.example.graduationproject.presentation.screens.ConvertScreen
-import com.example.graduationproject.presentation.ui.theme.CustomColor
-import com.example.graduationproject.presentation.ui.theme.GraduationProjectTheme
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
+import com.example.graduationproject.ui.theme.CustomColor
+import com.example.graduationproject.ui.theme.GraduationProjectTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+    @SuppressLint("CoroutineCreationDuringComposition")
+    @OptIn(ExperimentalGlideComposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val context = LocalContext.current
             val repository = Repository()
+            val coroutineScope = rememberCoroutineScope()
+            val viewModel = SharedViewModel()
             GraduationProjectTheme {
+                var favList by remember {
+                    mutableStateOf(listOf<CurrencyRoomDBItem>())
+                }
+                var showLoading by remember {
+                    mutableStateOf(false)
+                }
+                var listToCompare = mutableListOf<Int>()
+                coroutineScope.launch {
+                    favList = viewModel.getAllFav()
+                    listToCompare.clear()
+                    favList.forEach {
+                        listToCompare.add(it.id)
+                    }
+                }
+                LaunchedEffect(key1 = "") {
+                    viewModel.flowForCompare.collectLatest {
+                        val list = mutableListOf<String>()
+                        list.clear()
+                        it.compare_result.forEach {
+                            list.add(it.toString())
+                        }
+                        if (list.size == listToCompare.size)
+                            viewModel.updateRoom(list, listToCompare)
+                        favList = viewModel.getAllFav()
+                        println("hi ${it.compare_result.size} ${listToCompare.size}")
+                    }
+                }
                 var selectedScreenState by remember {
                     mutableStateOf("Convert")
                 }
                 var showBottomSheet by remember {
                     mutableStateOf(false)
                 }
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Column(
+                Box(modifier = Modifier.fillMaxSize().background(Color.Red)) {
+
+                    LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
                             .background(Color.White)
                     ) {
-                        BaseScreen() {
-                            selectedScreenState = it
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1F)
-                        ) {
-                            if (selectedScreenState == "Convert") {
-                                ConvertScreen(repository) {
-                                    //startActivity(Intent(context,AddToFav::class.java))
-                                    showBottomSheet = true
-                                }
-                            } else {
-                                CompareScreen()
+                        item {
+                            BaseScreen() {
+                                selectedScreenState = it
+                                println(it)
                             }
                         }
-                        AnimatedVisibility(visible = showBottomSheet) {
-                            BottomSheetShow(repository) {
-                                showBottomSheet = false
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                if (selectedScreenState == "Convert") {
+                                    ConvertScreen({ amount, baseId, listToCompare, showload ->
+                                        showLoading = showload
+                                        viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                            viewModel.compare(
+                                                CompareModelPost(
+                                                    1,
+                                                    baseId,
+                                                    listToCompare
+                                                )
+                                            )
+                                        }
+                                    }) {
+                                        showBottomSheet = true
+                                    }
+                                } else {
+                                    CompareScreen { showload ->
+                                        showLoading = showload
+                                    }
+                                }
+                                if (showLoading) {
+                                    Loading(
+                                        isDisplayed = showLoading,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                    coroutineScope.launch {
+                                        delay(1000)
+                                        showLoading = false
+                                    }
+                                }
+                            }
+                        }
+                        item {
+                            AnimatedVisibility(visible = showBottomSheet) {
+                                BottomSheetShow(repository) {
+                                    showBottomSheet = false
+                                    viewModel.viewModelScope.launch {
+                                        favList = viewModel.getAllFav()
+                                        listToCompare.clear()
+                                        favList.forEach {
+                                            listToCompare.add(it.id)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (selectedScreenState == "Convert") {
+                            items(favList.size) { index ->
+                                Row(
+                                    Modifier
+                                        .padding(10.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    GlideImage(
+                                        model = favList[index].countryFlag,
+                                        contentDescription = "image of currency",
+                                        modifier = Modifier.size(42.dp)
+                                    ) {
+                                        it.load(
+                                            favList[index].countryFlag
+                                        )
+                                        it.placeholder(R.drawable.baseline_flag_24)
+                                        it.error(R.drawable.baseline_dehaze_24)
+                                        it.circleCrop()
+                                    }
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column {
+                                        TextShow(
+                                            text = favList[index].currency,
+                                            color = CustomColor.black,
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 15
+                                        )
+                                        TextShow(
+                                            text = "Currency",
+                                            color = Color(0xFFB8B8B8),
+                                            fontFamily = FontFamily.Default,
+                                            fontSize = 13
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    TextShow(
+                                        text = favList[index].amount,
+                                        color = Color(0xFF121212),
+                                        fontFamily = FontFamily.Default
+                                    )
+                                }
                             }
                         }
                     }
                 }
-
             }
+
         }
     }
 
@@ -229,17 +335,15 @@ class MainActivity : ComponentActivity() {
                                         coroutineScope.launch(Dispatchers.IO) {
                                             repository.insertRoom(list2[index])
                                             println("${repository.getAllFav().size} insert")
+                                            viewModel.updateFlow()
                                         }
                                     } else {
                                         coroutineScope.launch(Dispatchers.IO) {
                                             repository.deleteRoom(list2[index])
                                             println("${repository.getAllFav().size} delete")
+                                            viewModel.updateFlow()
                                         }
                                     }
-                                    coroutineScope.launch {
-                                        println("${repository.getFavById(list2[index].id)} get item")
-                                    }
-
                                 }
                             }
                         }

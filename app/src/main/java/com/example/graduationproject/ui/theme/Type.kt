@@ -1,4 +1,4 @@
-package com.example.graduationproject.presentation.ui.theme.activites.ui.theme
+package com.example.graduationproject.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -15,6 +15,7 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
+    
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -31,4 +32,5 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
+
 )
