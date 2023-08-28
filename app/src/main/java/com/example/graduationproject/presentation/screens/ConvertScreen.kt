@@ -174,11 +174,11 @@ fun ConvertScreen(
                 }
             }
             Icon(
-                painter = painterResource(R.drawable.baseline_sync_24),
+                painter = painterResource(R.drawable.data_arrow_left_right),
                 contentDescription = "Swap Currency",
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 12.dp)
-                    .size(25.dp)
+                    .size(40.dp)
                     .align(Alignment.CenterHorizontally)
                     .clickable {
                         val i = target
