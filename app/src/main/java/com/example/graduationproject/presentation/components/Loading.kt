@@ -1,8 +1,5 @@
 package com.example.graduationproject.presentation.components
 
-//import androidx.compose.foundation.layout.ColumnScopeInstance.weight
-//import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
-//import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

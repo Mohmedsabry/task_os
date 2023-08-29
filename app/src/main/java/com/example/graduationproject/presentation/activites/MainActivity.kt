@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -120,7 +121,7 @@ class MainActivity : ComponentActivity() {
                                             fontSize = 15
                                         )
                                         TextShow(
-                                            text = "Currency",
+                                            text = "CURRENCY",
                                             color = Color(0xFFB8B8B8),
                                             fontFamily = FontFamily.Default,
                                             fontSize = 13
