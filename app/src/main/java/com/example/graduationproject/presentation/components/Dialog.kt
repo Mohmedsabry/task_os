@@ -108,7 +108,7 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                             Spacer(modifier = Modifier.width(10.dp))
                             Column(
                                 verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.Start
                             ) {
                                 TextShow(
                                     text = item.currency,
