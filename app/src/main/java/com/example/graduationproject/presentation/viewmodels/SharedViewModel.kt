@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.graduationproject.data.model.CompareModelGet
 import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyApiList
@@ -17,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 // main 3 fun
 class SharedViewModel : ViewModel() {
@@ -26,42 +24,35 @@ class SharedViewModel : ViewModel() {
     val flowForList: StateFlow<CurrencyApiList> = mutableFlowForList
     var showLoading by mutableStateOf(false)
     var convertState by mutableDoubleStateOf(0.0)
-    var compareResult by mutableStateOf(CompareModelGet(emptyList()))
     var favList by mutableStateOf(listOf<CurrencyRoomDBItem>())
-    var listToCompare = mutableListOf<Int>()
+    var listToCompare by mutableStateOf(listOf<Int>())
     var selectedScreenState by mutableStateOf("Convert")
-    var showBottomSheet by mutableStateOf(false)
-
+    var showDialog by mutableStateOf(false)
+    var dialogList by mutableStateOf(listOf<CurrencyRoomDBItem>())
 
     // main handling room
-
-    suspend fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
-        repository.insertRoom(currencyRoomDBItem)
+    init {
+        getAllFav()
     }
 
-    suspend fun deleteRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
-        repository.deleteRoom(currencyRoomDBItem)
-    }
-
-    suspend fun getAllFav() {
-        favList = repository.getAllFav()
-        listToCompare.clear()
-        favList.forEach {
-            listToCompare.add(it.id)
+    fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
+        viewModelScope.launch {
+            repository.insertRoom(currencyRoomDBItem)
         }
-        println(listToCompare.size)
     }
 
-    suspend fun updateRoom() {
-        withContext(Dispatchers.IO) {
-            val list = mutableListOf<String>()
-            list.clear()
-            compareResult.compare_result.forEach {
-                list.add(it.toString())
+    fun deleteRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
+        viewModelScope.launch {
+            repository.deleteRoom(currencyRoomDBItem)
+        }
+    }
+
+    fun getAllFav() {
+        viewModelScope.launch {
+            favList = repository.getAllFav()
+            listToCompare = favList.map {
+                it.id
             }
-            println("k $list $listToCompare")
-            if (list.size == listToCompare.size)
-                repository.updateRoom(list, listToCompare)
         }
     }
 
@@ -83,36 +74,34 @@ class SharedViewModel : ViewModel() {
                 target = targetId,
                 amount = amountValue.toDouble()
             ).conversion_result
+            val compareResult1 = repository.compare(
+                CompareModelPost(
+                    1,
+                    baseId,
+                    listToCompare
+                )
+            ).compare_result
+            favList = favList.mapIndexed { index, item ->
+                item.copy(amount = compareResult1[index].toString())
+            }
             showLoading = false
         }
     }
 
-    //compare
-    fun compare(compareModelPost: CompareModelPost) {
-        viewModelScope.launch(Dispatchers.IO) {
-            showLoading = true
-            compareResult = repository.compare(
-                CompareModelPost(
-                    compareModelPost.amount,
-                    compareModelPost.baseCurrencyId,
-                    compareModelPost.targetCurrencyIds
-                )
-            )
-            showLoading = false
-        }
-    }
 
     // dealing with room
-    suspend fun getAllListForBottomSheet(): List<CurrencyRoomDBItem> {
+    fun getAllListForDialog() {
         // list from Api
-        val list = convertFromApiListToRoomList(SharedObject.countriesList)
-        val favList = repository.getAllFav()
-        list.forEach { apiItem ->
-            favList.forEach { converted ->
-                if (converted.id == apiItem.id) apiItem.flag = true
+        viewModelScope.launch {
+            val list = convertFromApiListToRoomList(SharedObject.countriesList)
+            val favList = repository.getAllFav()
+            list.forEach { apiItem ->
+                favList.forEach { converted ->
+                    if (converted.id == apiItem.id) apiItem.flag = true
+                }
             }
+            dialogList = list
         }
-        return list
     }
 
     private fun convertFromApiListToRoomList(list: List<Currency>): List<CurrencyRoomDBItem> {

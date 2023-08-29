@@ -206,16 +206,6 @@ fun ConvertScreen(
                             convertViewModel.target.id,
                             convertViewModel.amountValue
                         )
-                        sharedViewModel.compare(
-                            CompareModelPost(
-                                1,
-                                compareViewModel.base.id,
-                                sharedViewModel.listToCompare
-                            )
-                        )
-                        sharedViewModel.viewModelScope.launch {
-                            sharedViewModel.updateRoom()
-                        }
                     }
                 },
                 modifier = Modifier

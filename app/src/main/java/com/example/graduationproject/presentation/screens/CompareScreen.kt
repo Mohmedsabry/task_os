@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
@@ -36,8 +35,6 @@ import com.example.graduationproject.presentation.components.TextShow
 import com.example.graduationproject.presentation.viewmodels.CompareViewModel
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,10 +100,12 @@ fun CompareScreen(
                         compareViewModel.firstTargetSelected = compareViewModel.base
                         compareViewModel.base = selectedItem
                     }
+
                     compareViewModel.secondTargetSelected -> {
                         compareViewModel.secondTargetSelected = compareViewModel.base
                         compareViewModel.base = selectedItem
                     }
+
                     else -> {
                         compareViewModel.base = selectedItem
                     }
@@ -158,7 +157,6 @@ fun CompareScreen(
                         color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                     )
             ) {
-                    selectedItem ->
 
             }
         }
@@ -198,26 +196,17 @@ fun CompareScreen(
         Button(
             onClick = {
                 if (compareViewModel.amount.isNotEmpty() && compareViewModel.amount.isNotBlank()) {
-                    sharedViewModel.viewModelScope.launch(Dispatchers.IO) {
-                        sharedViewModel.showLoading = true
-                        sharedViewModel.compare(
-                            CompareModelPost(
-                                compareViewModel.amount.toInt(),
-                                compareViewModel.base.id,
-                                listOf(
-                                    compareViewModel.firstTargetSelected.id,
-                                    compareViewModel.secondTargetSelected.id
-                                )
+                    compareViewModel.compare(
+                        CompareModelPost(
+                            compareViewModel.amount.toInt(),
+                            compareViewModel.base.id,
+                            listOf(
+                                compareViewModel.firstTargetSelected.id,
+                                compareViewModel.secondTargetSelected.id
                             )
                         )
-                        if (sharedViewModel.compareResult.compare_result.isNotEmpty()) {
-                            compareViewModel.firstTargetValue =
-                                sharedViewModel.compareResult.compare_result[0].toString()
-                            compareViewModel.secondTargetValue =
-                                sharedViewModel.compareResult.compare_result[1].toString()
-                        }
-                        sharedViewModel.showLoading = false
-                    }
+                    )
+
                 }
             }, Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
                 CustomColor.black, contentColor = Color.White

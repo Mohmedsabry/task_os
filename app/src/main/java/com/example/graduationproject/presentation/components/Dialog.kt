@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -40,7 +41,6 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
-import com.example.graduationproject.domain.Repository
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.Dispatchers
@@ -49,15 +49,8 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-    var list2 by remember {
-        mutableStateOf(listOf<CurrencyRoomDBItem>())
-    }
-    val viewModel: SharedViewModel = SharedViewModel()
-    viewModel.viewModelScope.launch {
-        list2 = viewModel.getAllListForBottomSheet()
-    }
+fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
+    sharedViewModel.getAllListForDialog()
     Dialog(onDismissRequest = {
         dismissAction.invoke()
     }) {
@@ -98,7 +91,7 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(list2.size) { index ->
+                    items(sharedViewModel.dialogList) { item->
                         Row(
                             Modifier
                                 .padding(10.dp)
@@ -106,15 +99,15 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             var isCheck by remember {
-                                mutableStateOf(list2[index].flag)
+                                mutableStateOf(item.flag)
                             }
                             GlideImage(
-                                model = list2[index].countryFlag,
+                                model = item.countryFlag,
                                 contentDescription = "",
                                 modifier = Modifier.size(42.dp)
                             ) {
                                 it.load(
-                                    list2[index].countryFlag
+                                    item.countryFlag
                                 )
                                 it.placeholder(R.drawable.baseline_flag_24)
                                 it.error(R.drawable.baseline_dehaze_24)
@@ -126,13 +119,13 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 TextShow(
-                                    text = list2[index].currency,
+                                    text = item.currency,
                                     color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 13
                                 )
                                 TextShow(
-                                    text = list2[index].currency,
+                                    text = item.currency,
                                     color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 11
@@ -163,17 +156,11 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                                         )
                                 }
                                 if (isCheck) {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.insertRoom(list2[index])
-                                        println("${repository.getAllFav().size} insert")
-                                        viewModel.getAllFav()
-                                    }
+                                        sharedViewModel.insertRoom(item)
+                                        sharedViewModel.getAllFav()
                                 } else {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.deleteRoom(list2[index])
-                                        println("${repository.getAllFav().size} delete")
-                                        viewModel.getAllFav()
-                                    }
+                                        sharedViewModel.deleteRoom(item)
+                                        sharedViewModel.getAllFav()
                                 }
                             }
                         }
