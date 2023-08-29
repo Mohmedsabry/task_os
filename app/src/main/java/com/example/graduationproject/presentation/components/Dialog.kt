@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -37,24 +41,16 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
-import com.example.graduationproject.domain.Repository
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun DailogShow(repository: Repository, dismissAction: () -> Unit) {
-    val coroutineScope = rememberCoroutineScope()
-    var list2 by remember {
-        mutableStateOf(listOf<CurrencyRoomDBItem>())
-    }
-    val viewModel: SharedViewModel = SharedViewModel()
-    viewModel.viewModelScope.launch {
-        list2 = viewModel.getAllListForBottomSheet()
-    }
+fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
+    sharedViewModel.getAllListForDialog()
     Dialog(onDismissRequest = {
         dismissAction.invoke()
     }) {
@@ -95,7 +91,7 @@ fun DailogShow(repository: Repository, dismissAction: () -> Unit) {
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(list2.size) { index ->
+                    items(sharedViewModel.dialogList) { item->
                         Row(
                             Modifier
                                 .padding(10.dp)
@@ -103,15 +99,15 @@ fun DailogShow(repository: Repository, dismissAction: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             var isCheck by remember {
-                                mutableStateOf(list2[index].flag)
+                                mutableStateOf(item.flag)
                             }
                             GlideImage(
-                                model = list2[index].countryFlag,
+                                model = item.countryFlag,
                                 contentDescription = "",
                                 modifier = Modifier.size(42.dp)
                             ) {
                                 it.load(
-                                    list2[index].countryFlag
+                                    item.countryFlag
                                 )
                                 it.placeholder(R.drawable.baseline_flag_24)
                                 it.error(R.drawable.baseline_dehaze_24)
@@ -123,61 +119,55 @@ fun DailogShow(repository: Repository, dismissAction: () -> Unit) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 TextShow(
-                                    text = list2[index].currency,
+                                    text = item.currency,
                                     color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 13
                                 )
                                 TextShow(
-                                    text = "CURRENCY",
-                                    color = Color(0xFFB8B8B8),
+                                    text = item.currency,
+                                    color = CustomColor.black,
                                     fontFamily = FontFamily.Default,
                                     fontSize = 11
                                 )
                             }
 
                             Spacer(modifier = Modifier.weight(1f))
-
-                            Box(modifier = Modifier
-
-                                .clickable {
-                                    isCheck = !isCheck
-                                }
-                                .size(25.dp),
-                                contentAlignment = Alignment.Center
+                            Card(
+                                colors = CardDefaults.cardColors(Color.Black),
+                                elevation = CardDefaults.cardElevation(0.dp),
+                                shape = RoundedCornerShape((12.dp)),
                             ) {
+                                Box(modifier = Modifier
+                                    .background(
+                                        if (isCheck) Color.Black else Color.LightGray
+                                    )
+                                    .clickable {
+                                        isCheck = !isCheck
+                                    }
+                                    .size(25.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (isCheck)
+                                        Icon(
+                                            Icons.Default.Check,
+                                            contentDescription = "check",
+                                            tint = Color.White
+                                        )
+                                }
                                 if (isCheck) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.grop),
-                                        contentDescription = "check",
-                                        modifier = Modifier.size(30.dp)
-                                    )
+                                        sharedViewModel.insertRoom(item)
+                                        sharedViewModel.getAllFav()
                                 } else {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ellipse),
-                                        contentDescription = "check",
-                                        modifier = Modifier.size(30.dp)
-                                    )
-                                }
-                            }
-                            if (isCheck) {
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    repository.insertRoom(list2[index])
-                                    println("${repository.getAllFav().size} insert")
-                                    viewModel.updateFlow()
-                                }
-                            } else {
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    repository.deleteRoom(list2[index])
-                                    println("${repository.getAllFav().size} delete")
-                                    viewModel.updateFlow()
+                                        sharedViewModel.deleteRoom(item)
+                                        sharedViewModel.getAllFav()
                                 }
                             }
                         }
                         Divider(
                             Modifier
-                                .background(Color(0xFFB9C1D9))
-                                .weight(1f),
+                                .background(color = Color(0xFFB9C1D9))
+                                .weight(1f)
                         )
                     }
                 }
