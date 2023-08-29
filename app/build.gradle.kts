@@ -70,8 +70,6 @@ dependencies {
     implementation("com.google.android.engage:engage-core:1.2.0")
     implementation("androidx.core:core-ktx:+")
     implementation("com.android.support:support-annotations:28.0.0")
-    implementation("androidx.test.ext:junit-ktx:1.1.5")
-    implementation("androidx.test:runner:1.5.2")
     val lifecycle_version = "2.6.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     testImplementation("junit:junit:4.13.2")
@@ -106,14 +104,4 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.material3:material3:1.2.0-alpha02")
-    //  Test rules and transitive dependencies:
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.0")
-// Needed for createAndroidComposeRule, but not createComposeRule:
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha05")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha05")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    androidTestImplementation("androidx.test:rules:1.4.0")
 }

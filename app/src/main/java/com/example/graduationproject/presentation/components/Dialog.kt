@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShap
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -53,13 +52,15 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                 .background(Color.White)
                 .padding(top = 30.dp, bottom = 30.dp, start = 10.dp, end = 10.dp)
         ) {
-            Icon(painter = painterResource(id = R.drawable.baseline_close_24),
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_close_24),
                 contentDescription = "close activity",
                 modifier = Modifier
                     .clickable {
                         dismissAction.invoke()
                     }
-                    .align(Alignment.End))
+                    .align(Alignment.End)
+            )
             Spacer(modifier = Modifier.height(25.dp))
             Card(
                 shape = CardDefaults.outlinedShape,
@@ -88,7 +89,6 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                                 .padding(10.dp)
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
-
                         ) {
                             var isCheck by remember {
                                 mutableStateOf(item.flag)
@@ -129,7 +129,7 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                                 .clickable {
                                     isCheck = !isCheck
                                 }
-                               .size(25.dp),
+                                .size(25.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 if (isCheck) {
@@ -144,26 +144,6 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                                         contentDescription = "check",
                                         modifier = Modifier.size(30.dp)
                                     )
-                                    .clickable {
-                                        isCheck = !isCheck
-                                    }
-                                    .size(25.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isCheck) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.grop),
-                                            contentDescription = "check",
-                                            tint = Color.White, modifier = Modifier.size(30.dp)
-                                        )
-                                    } else {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ellipse),
-                                            contentDescription = "check",
-                                            tint = Color.White, modifier = Modifier.size(30.dp)
-                                        )
-
-                                    }
                                 }
                                 if (isCheck) {
                                     sharedViewModel.insertRoom(item)
