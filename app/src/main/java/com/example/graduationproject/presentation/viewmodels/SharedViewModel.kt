@@ -1,10 +1,13 @@
 package com.example.graduationproject.presentation.viewmodels
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.model.CompareModelGet
 import com.example.graduationproject.data.model.CompareModelPost
-import com.example.graduationproject.data.model.ConvertModel
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyApiList
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
@@ -19,39 +22,52 @@ import kotlinx.coroutines.withContext
 // main 3 fun
 class SharedViewModel : ViewModel() {
     private val repository = Repository()
-    var showLoading = false
+    private val mutableFlowForList = MutableStateFlow(CurrencyApiList(emptyList()))
+    val flowForList: StateFlow<CurrencyApiList> = mutableFlowForList
+    var showLoading by mutableStateOf(false)
+    var convertState by mutableDoubleStateOf(0.0)
+    var compareResult by mutableStateOf(CompareModelGet(emptyList()))
+    var favList by mutableStateOf(listOf<CurrencyRoomDBItem>())
+    var listToCompare = mutableListOf<Int>()
+    var selectedScreenState by mutableStateOf("Convert")
+    var showBottomSheet by mutableStateOf(false)
+
 
     // main handling room
-    val mutableFav = MutableStateFlow(emptyList<CurrencyRoomDBItem>())
-    val flow :StateFlow<List<CurrencyRoomDBItem>> = mutableFav
-    var list = mutableFav.value
-    fun updateFlow() {
-        viewModelScope.launch(Dispatchers.IO) {
-            mutableFav.value = repository.getAllFav()
-            list = mutableFav.value
-            println("list is $list")
-        }
-    }
-    suspend fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem){
+
+    suspend fun insertRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
         repository.insertRoom(currencyRoomDBItem)
     }
-    suspend fun deleteRoom(currencyRoomDBItem: CurrencyRoomDBItem){
+
+    suspend fun deleteRoom(currencyRoomDBItem: CurrencyRoomDBItem) {
         repository.deleteRoom(currencyRoomDBItem)
     }
 
-    suspend fun getAllFav():List<CurrencyRoomDBItem> = repository.getAllFav()
-    suspend fun updateRoom(amounts: List<String>, intList: List<Int>){
-        withContext(Dispatchers.IO){
-            repository.updateRoom(amounts, intList)
+    suspend fun getAllFav() {
+        favList = repository.getAllFav()
+        listToCompare.clear()
+        favList.forEach {
+            listToCompare.add(it.id)
         }
-    }
-    init {
-        updateFlow()
+        println(listToCompare.size)
     }
 
+    suspend fun updateRoom() {
+        withContext(Dispatchers.IO) {
+            val list = mutableListOf<String>()
+            list.clear()
+            compareResult.compare_result.forEach {
+                list.add(it.toString())
+            }
+            println("k $list $listToCompare")
+            if (list.size == listToCompare.size)
+                repository.updateRoom(list, listToCompare)
+        }
+    }
+
+
     // get list
-    private val mutableFlowForList = MutableStateFlow(CurrencyApiList(emptyList()))
-    val flowForList: StateFlow<CurrencyApiList> = mutableFlowForList
+
     fun getList() {
         viewModelScope.launch(Dispatchers.IO) {
             mutableFlowForList.value = repository.getList()
@@ -59,32 +75,30 @@ class SharedViewModel : ViewModel() {
     }
 
     // convert
-    private val mutableFlowForConvert = MutableStateFlow(ConvertModel(0.0))
-    val flowForConvert: StateFlow<ConvertModel> = mutableFlowForConvert
-    fun convertCurrecny(
-        source: Int,
-        target: Int,
-        amount: Double
-    ) {
+    fun convert(baseId: Int, targetId: Int, amountValue: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            mutableFlowForConvert.value = repository.convert(source, target, amount)
+            showLoading = true
+            convertState = repository.convert(
+                source = baseId,
+                target = targetId,
+                amount = amountValue.toDouble()
+            ).conversion_result
+            showLoading = false
         }
     }
 
     //compare
-    private val mutableFlowForCompare = MutableStateFlow(CompareModelGet(emptyList()))
-    val flowForCompare: StateFlow<CompareModelGet> = mutableFlowForCompare
     fun compare(compareModelPost: CompareModelPost) {
         viewModelScope.launch(Dispatchers.IO) {
-            mutableFlowForCompare.value =
-                repository.compare(
-                    CompareModelPost(
-                        compareModelPost.amount,
-                        compareModelPost.baseCurrencyId,
-                        compareModelPost.targetCurrencyIds
-                    )
+            showLoading = true
+            compareResult = repository.compare(
+                CompareModelPost(
+                    compareModelPost.amount,
+                    compareModelPost.baseCurrencyId,
+                    compareModelPost.targetCurrencyIds
                 )
-            println("${mutableFlowForCompare.value} compare")
+            )
+            showLoading = false
         }
     }
 

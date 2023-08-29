@@ -18,14 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,148 +46,10 @@ import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
-@SuppressLint("CoroutineCreationDuringComposition")
-@Composable
-fun BottomSheet(dismissAction: () -> Unit) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
-    val coroutineScope = rememberCoroutineScope()
-    var list2 by remember {
-        mutableStateOf(listOf<CurrencyRoomDBItem>())
-    }
-    val viewModel: SharedViewModel = SharedViewModel()
-    val repository = Repository()
-    viewModel.viewModelScope.launch {
-        list2 = viewModel.getAllListForBottomSheet()
-    }
-    ModalBottomSheet(
-        onDismissRequest = { dismissAction() },
-        sheetState = rememberModalBottomSheetState(),
-        dragHandle = { BottomSheetDefaults.DragHandle() },
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(20.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_close_24),
-                contentDescription = "close activity",
-                modifier = Modifier
-                    .clickable {
-                        dismissAction.invoke()
-                    }
-                    .align(Alignment.End)
-                    .padding(bottom = 20.dp)
-            )
-            Card(
-                shape = CardDefaults.outlinedShape,
-                colors = CardDefaults.cardColors(CustomColor.lightGray),
-                modifier = Modifier
-                    .padding(10.dp)
-                    .align(Alignment.Start)
-            ) {
-                TextShow(
-                    text = "My Favorites",
-                    color = Color(0xff121212),
-                    fontFamily = FontFamily.Default,
-                    fontSize = 17,
-                    weight = 500,
-                    modifier = Modifier.padding(20.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxSize()
-                        .padding(10.dp)
-                ) {
-                    items(list2.size) { index ->
-                        Row(
-                            Modifier
-                                .padding(10.dp)
-                                .fillMaxWidth()
-                        ) {
-                            var isCheck by remember {
-                                mutableStateOf(list2[index].flag)
-                            }
-                            GlideImage(
-                                model = list2[index].countryFlag,
-                                contentDescription = "",
-                                modifier = Modifier.size(42.dp)
-                            ) {
-                                it.load(
-                                    list2[index].countryFlag
-                                )
-                                it.placeholder(R.drawable.baseline_flag_24)
-                                it.error(R.drawable.baseline_dehaze_24)
-                                it.circleCrop()
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column {
-                                TextShow(
-                                    text = list2[index].currency,
-                                    color = CustomColor.black,
-                                    fontFamily = FontFamily.Default,
-                                    fontSize = 13
-                                )
-                                TextShow(
-                                    text = list2[index].currency,
-                                    color = CustomColor.black,
-                                    fontFamily = FontFamily.Default,
-                                    fontSize = 11
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.weight(1f))
-                            Card(
-                                colors = CardDefaults.cardColors(Color.Black),
-                                elevation = CardDefaults.cardElevation(0.dp),
-                                shape = RoundedCornerShape((12.dp)),
-                            ) {
-                                Box(modifier = Modifier
-                                    .background(
-                                        if (isCheck) Color.Black else Color.LightGray
-                                    )
-                                    .clickable {
-                                        isCheck = !isCheck
-                                    }
-                                    .size(25.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isCheck)
-                                        Icon(
-                                            Icons.Default.Check,
-                                            contentDescription = "check",
-                                            tint = Color.White
-                                        )
-                                }
-                                if (isCheck) {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.insertRoom(list2[index])
-                                        println("${repository.getAllFav().size} insert")
-                                        viewModel.updateFlow()
-                                    }
-                                } else {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.deleteRoom(list2[index])
-                                        println("${repository.getAllFav().size} delete")
-                                        viewModel.updateFlow()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
- fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
+fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     var list2 by remember {
         mutableStateOf(listOf<CurrencyRoomDBItem>())
@@ -207,7 +65,7 @@ fun BottomSheet(dismissAction: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(top=30.dp,bottom=30.dp,start =10.dp,end=10.dp)
+                .padding(top = 30.dp, bottom = 30.dp, start = 10.dp, end = 10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_close_24),
@@ -308,13 +166,13 @@ fun BottomSheet(dismissAction: () -> Unit) {
                                     coroutineScope.launch(Dispatchers.IO) {
                                         repository.insertRoom(list2[index])
                                         println("${repository.getAllFav().size} insert")
-                                        viewModel.updateFlow()
+                                        viewModel.getAllFav()
                                     }
                                 } else {
                                     coroutineScope.launch(Dispatchers.IO) {
                                         repository.deleteRoom(list2[index])
                                         println("${repository.getAllFav().size} delete")
-                                        viewModel.updateFlow()
+                                        viewModel.getAllFav()
                                     }
                                 }
                             }
