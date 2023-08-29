@@ -1,6 +1,8 @@
-package com.example.graduationproject.presentation.screen
+package com.example.graduationproject.presentation.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +20,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,43 +28,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.ui.theme.CustomColor
+import com.example.graduationproject.presentation.viewmodels.CompareViewModel
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.example.graduationproject.ui.theme.CustomColor
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompareScreen() {
-    val viewModel = SharedViewModel()
-    var amount by remember {
-        mutableStateOf("")
-    }
-    var targetValue1 by remember {
-        mutableStateOf("")
-    }
-    var targetValue2 by remember {
-        mutableStateOf("")
-    }
-    var targetSelected1 by remember {
-        mutableStateOf(SharedObject.countriesList[1])
-    }
-    var targetSelected2 by remember {
-        mutableStateOf(SharedObject.countriesList[2])
-    }
-    var base by remember {
-        mutableStateOf(SharedObject.countriesList[0])
-    }
+fun CompareScreen(
+    compareViewModel: CompareViewModel,
+    sharedViewModel: SharedViewModel,
+) {
     Column(Modifier.padding(30.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
         ) {
             TextShow(
                 text = "Amount",
@@ -84,18 +63,17 @@ fun CompareScreen() {
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
         ) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(.5f)
                     .background(
-                        color = Color(0xFFF9F9F9),
-                        shape = RoundedCornerShape(size = 20.dp)
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                     ),
-                value = amount, onValueChange = {
-                    amount = it
+                value = compareViewModel.amount,
+                onValueChange = {
+                    compareViewModel.amount = it
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -104,35 +82,39 @@ fun CompareScreen() {
             Spacer(
                 modifier = Modifier
                     .width(10.dp)
-                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+                    .background(
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
+                    )
             )
             DropDownShow(
-                base,
-                countryApi = SharedObject.countriesList, modifier = Modifier
+                compareViewModel.base,
+                countryApi = SharedObject.countriesList,
+                modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
+                    .background(
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
+                    )
             ) { selectedItem ->
                 when (selectedItem) {
-                    targetSelected1 -> {
-                        targetSelected1 = base
-                        base = selectedItem
+                    compareViewModel.firstTargetSelected -> {
+                        compareViewModel.firstTargetSelected = compareViewModel.base
+                        compareViewModel.base = selectedItem
                     }
 
-                    targetSelected2 -> {
-                        targetSelected2 = base
-                        base = selectedItem
+                    compareViewModel.secondTargetSelected -> {
+                        compareViewModel.secondTargetSelected = compareViewModel.base
+                        compareViewModel.base = selectedItem
                     }
 
                     else -> {
-                        base = selectedItem
+                        compareViewModel.base = selectedItem
                     }
                 }
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
         ) {
             TextShow(
                 text = "Targeted currency",
@@ -155,50 +137,56 @@ fun CompareScreen() {
             horizontalArrangement = Arrangement.Start
         ) {
             DropDownShow(
-                targetSelected1,
+                compareViewModel.firstTargetSelected,
                 countryApi = SharedObject.countriesList.filter {
-                    it.currencyCode != base.currencyCode && it.currencyCode != targetSelected2.currencyCode
-                }, modifier = Modifier
-                    .fillMaxWidth(.5f)
+                    it.currencyCode != compareViewModel.base.currencyCode && it.currencyCode != compareViewModel.secondTargetSelected.currencyCode
+                },
+                modifier = Modifier.fillMaxWidth(.5f)
             ) { selectedItem ->
-                targetSelected1 = selectedItem
+                compareViewModel.firstTargetSelected = selectedItem
             }
             Spacer(modifier = Modifier.width(10.dp))
             DropDownShow(
-                targetSelected2,
+                compareViewModel.secondTargetSelected,
                 countryApi = SharedObject.countriesList.filter {
-                    it.currencyCode != base.currencyCode && it.currencyCode != targetSelected1.currencyCode
-                }, modifier = Modifier
-                    .fillMaxWidth(.5f)
-                    .background(color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp))
-            ) { selectedItem ->
+                    it.currencyCode != compareViewModel.base.currencyCode && it.currencyCode != compareViewModel.firstTargetSelected.currencyCode
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
+                    )
+            ) {
 
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
         ) {
             OutlinedTextField(
-                value = targetValue1, onValueChange = {}, enabled = false,
+                value = compareViewModel.firstTargetValue, onValueChange = {}, readOnly = false,
                 modifier = Modifier
                     .fillMaxWidth(.5f)
+                    .border(
+                        width = 0.5.dp, color = Color(0xFFC5C5C5), RoundedCornerShape(size = 20.dp)
+                    )
                     .background(
-                        color = Color(0xFFF9F9F9),
-                        shape = RoundedCornerShape(size = 20.dp)
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
             )
             Spacer(modifier = Modifier.width(10.dp))
             OutlinedTextField(
-                value = targetValue2, onValueChange = {}, enabled = false,
+                value = compareViewModel.secondTargetValue, onValueChange = {}, readOnly = false,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .border(
+                        width = 0.5.dp, color = Color(0xFFC5C5C5), RoundedCornerShape(size = 20.dp)
+                    )
                     .background(
-                        color = Color(0xFFF9F9F9),
-                        shape = RoundedCornerShape(size = 20.dp)
+                        color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
@@ -207,32 +195,24 @@ fun CompareScreen() {
         Spacer(modifier = Modifier.height(10.dp))
         Button(
             onClick = {
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    viewModel.compare(
+                if (compareViewModel.amount.isNotEmpty() && compareViewModel.amount.isNotBlank()) {
+                    compareViewModel.compare(
                         CompareModelPost(
-                            amount.toInt(),
-                            base.id,
-                            listOf(targetSelected1.id, targetSelected2.id)
+                            compareViewModel.amount.toInt(),
+                            compareViewModel.base.id,
+                            listOf(
+                                compareViewModel.firstTargetSelected.id,
+                                compareViewModel.secondTargetSelected.id
+                            )
                         )
                     )
-                    viewModel.flowForCompare.collectLatest {
-                        if (it.compare_result.isNotEmpty()) {
-                            targetValue1 = it.compare_result[0].toString()
-                            targetValue2 = it.compare_result[1].toString()
-                        }
-                    }
+
                 }
-            },
-            Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                CustomColor.black,
-                contentColor = Color.White
+            }, Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
+                CustomColor.black, contentColor = Color.White
             )
         ) {
             Text(text = "Compare", fontSize = 16.sp, fontWeight = FontWeight(800))
         }
     }
 }
-
-

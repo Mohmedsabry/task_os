@@ -4,24 +4,24 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,11 +30,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,72 +42,32 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.Repository
-import com.example.graduationproject.data.model.CompareModelGet
 import com.example.graduationproject.data.model.CompareModelPost
-import com.example.graduationproject.data.model.Currency
-import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.data.presestance.SharedObject
 import com.example.graduationproject.presentation.components.DropDownShow
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.ui.theme.CustomColor
+import com.example.graduationproject.presentation.viewmodels.CompareViewModel
+import com.example.graduationproject.presentation.viewmodels.ConvertViewModel
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import com.example.graduationproject.ui.theme.CustomColor
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.converter.gson.GsonConverterFactory
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConvertScreen(
-    repository: Repository,
+    sharedViewModel: SharedViewModel,
+    convertViewModel: ConvertViewModel,
+    compareViewModel: CompareViewModel,
     openAddToFav: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val viewModel = SharedViewModel()
-    var amountValue by remember {
-        mutableStateOf("")
-    }
-
-    var result by remember {
-        mutableStateOf("1")
-    }
-    var base by remember {
-        if(SharedObject.countriesList.isNotEmpty())
-            mutableStateOf(SharedObject.countriesList[0])
-        else{
-            mutableStateOf(Currency("USD","https://flagcdn.com/h60/us.png",1))
-        }
-    }
-    var target by remember {
-        if(SharedObject.countriesList.isNotEmpty())
-            mutableStateOf(SharedObject.countriesList[1])
-        else{
-            mutableStateOf(Currency("EUR","https://flagcdn.com/h60/eu.png",2))
-        }
-    }
-    var favList by remember {
-        mutableStateOf(listOf<CurrencyRoomDBItem>())
-    }
-    var listToCompare = mutableListOf<Int>()
-    coroutineScope.launch {
-        favList = repository.getAllFav()
-        listToCompare.clear()
-        favList.forEach {
-            listToCompare.add(it.id)
-        }
-        println(listToCompare.size)
+    viewModel.viewModelScope.launch {
+        viewModel.getAllFav()
     }
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(Color.White)
+        modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -120,9 +75,7 @@ fun ConvertScreen(
                 .padding(20.dp)
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
             ) {
                 TextShow(
                     text = "Amount",
@@ -140,18 +93,22 @@ fun ConvertScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
             ) {
                 OutlinedTextField(
                     modifier = Modifier
-                        .background(
-                            color = Color(0xFFF9F9F9),
-                            shape = RoundedCornerShape(size = 20.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
                         )
-                        .fillMaxWidth(.4f),
-                    value = amountValue, onValueChange = {
-                        amountValue = it
+                        .background(
+                            color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
+                        )
+                        .fillMaxWidth(.5f),
+                    value = convertViewModel.amountValue,
+                    onValueChange = {
+                        convertViewModel.amountValue = it
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
                     shape = RoundedCornerShape(20.dp),
@@ -159,41 +116,38 @@ fun ConvertScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DropDownShow(
-                    base,
+                    convertViewModel.base,
                     countryApi = SharedObject.countriesList,
                     modifier = Modifier
                         .background(
-                            color = Color(0xFFF9F9F9),
-                            shape = RoundedCornerShape(size = 20.dp)
+                            color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                         )
                         .fillMaxWidth()
                 ) { selectedItem ->
-                    if (selectedItem == target) {
-                        target = base
-                        base = selectedItem
+                    if (selectedItem == convertViewModel.target) {
+                        convertViewModel.target = convertViewModel.base
+                        convertViewModel.base = selectedItem
                     } else {
-                        base = selectedItem
+                        convertViewModel.base = selectedItem
                     }
                 }
             }
             Icon(
-                painter = painterResource(R.drawable.baseline_sync_24),
+                painter = painterResource(R.drawable.data_arrow_left_right),
                 contentDescription = "Swap Currency",
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 12.dp)
-                    .size(25.dp)
+                    .size(35.dp)
                     .align(Alignment.CenterHorizontally)
                     .clickable {
-                        val i = target
-                        target = base
-                        base = i
+                        val i = convertViewModel.target
+                        convertViewModel.target = convertViewModel.base
+                        convertViewModel.base = i
                     },
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
             ) {
                 TextShow(
                     text = "To",
@@ -210,82 +164,68 @@ fun ConvertScreen(
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
             ) {
                 DropDownShow(
-                    target,
-                    countryApi = SharedObject.countriesList.filter {
-                        it.currencyCode != base.currencyCode
-                    },
-                    modifier = Modifier
+                    convertViewModel.target, countryApi = SharedObject.countriesList.filter {
+                        it.currencyCode != convertViewModel.base.currencyCode
+                    }, modifier = Modifier
                         .background(
-                            color = Color(0xFFF9F9F9),
-                            shape = RoundedCornerShape(size = 20.dp)
+                            color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
                         )
                         .fillMaxWidth(.5f)
                 ) { selectedItem ->
-                    target = selectedItem
+                    convertViewModel.target = selectedItem
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = Color(0xFFF9F9F9),
-                            shape = RoundedCornerShape(size = 20.dp)
+                            color = Color(0xFFF9F9F9), shape = RoundedCornerShape(size = 20.dp)
+                        )
+                        .border(
+                            width = 0.5.dp,
+                            color = Color(0xFFC5C5C5),
+                            RoundedCornerShape(size = 20.dp)
                         ),
-                    value = result, onValueChange = {},
+                    value = sharedViewModel.convertState.toString(),
+                    onValueChange = {},
                     colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFF000000)),
-                    enabled = false,
+                    readOnly = false,
                     shape = RoundedCornerShape(20.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
-
             }
-
             Button(
                 onClick = {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.convertCurrecny(
-                            base.currencyCode,
-                            target.currencyCode,
-                            amountValue.toDouble()
+                    if (convertViewModel.amountValue.isNotEmpty() && convertViewModel.amountValue.isNotBlank()) {
+                        sharedViewModel.convert(
+                            convertViewModel.base.id,
+                            convertViewModel.target.id,
+                            convertViewModel.amountValue
                         )
-                        viewModel.flowForConvert.collectLatest {
-                            result = it.conversion_result.toString()
-                        }
                     }
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.compare(CompareModelPost(1,base.id,listToCompare))
-                        viewModel.flowForCompare.collectLatest {
-                            val list = mutableListOf<String>()
-                            list.clear()
-                            it.compare_result.forEach {
-                                list.add(it.toString())
-                            }
-                            repository.updateRoom(list,listToCompare)
-                            favList = repository.getAllFav()
-                            println("hi $it $list")
-                        }
-                    }
-                }, modifier = Modifier
+                },
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFF363636)),
                 shape = RoundedCornerShape(size = 20.dp)
             ) {
                 Text(
-                    text = "Convert",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(800),
-                        color = Color.White
+                    text = "Convert", style = TextStyle(
+                        fontSize = 16.sp, fontWeight = FontWeight(800), color = Color.White
                     )
                 )
             }
+            Divider(
+                Modifier
+                    .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
+                    .height(1.dp)
+                    .background(color = Color(0xFFE9E9E9))
+            )
             Row(
                 horizontalArrangement = Arrangement.Start,
             ) {
@@ -307,8 +247,9 @@ fun ConvertScreen(
                     shape = RoundedCornerShape(50)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                        contentDescription = "Add to favourite", contentScale = ContentScale.None
+                        painter = painterResource(id = R.drawable.plus_1),
+                        contentDescription = "Add to favourite",
+                        contentScale = ContentScale.None
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     TextShow(
@@ -319,73 +260,14 @@ fun ConvertScreen(
                     )
                 }
             }
-            Card(
-                shape = CardDefaults.outlinedShape,
-                colors = CardDefaults.cardColors(CustomColor.lightGray),
-                modifier = Modifier
-                    .padding(10.dp)
-                    .align(Alignment.Start)
-            ) {
-                TextShow(
-                    text = "My Portofolio",
-                    color = Color(0xFF121212),
-                    fontFamily = FontFamily.Default,
-                    fontSize = 20,
-                    weight = 400,
-                    modifier = Modifier.padding(10.dp)
-                )
-
-                LazyColumn(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxSize()
-                        .padding(10.dp)
-                ) {
-                    items(favList.size) { index ->
-                        Row(
-                            Modifier
-                                .padding(10.dp)
-                                .fillMaxWidth()
-                        ) {
-
-                            GlideImage(
-                                model = favList[index].countryFlag,
-                                contentDescription = "image of currency",
-                                modifier = Modifier.size(42.dp)
-                            ) {
-                                it.load(
-                                    favList[index].countryFlag
-                                )
-                                it.placeholder(R.drawable.baseline_flag_24)
-                                it.error(R.drawable.baseline_dehaze_24)
-                                it.circleCrop()
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column {
-                                TextShow(
-                                    text = favList[index].currency,
-                                    color = CustomColor.black,
-                                    fontFamily = FontFamily.Default,
-                                    fontSize = 15
-                                )
-                                TextShow(
-                                    text = "Currency",
-                                    color = Color(0xFFB8B8B8),
-                                    fontFamily = FontFamily.Default,
-                                    fontSize = 13
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            TextShow(
-                                text = favList[index].amount,
-                                color = Color(0xFF121212),
-                                fontFamily = FontFamily.Default
-                            )
-                        }
-                    }
-                }
-            }
+            TextShow(
+                text = "My Portofolio",
+                color = Color(0xFF121212),
+                fontFamily = FontFamily.Default,
+                fontSize = 20,
+                weight = 400,
+                modifier = Modifier.padding(top = 10.dp)
+            )
         }
     }
-
 }

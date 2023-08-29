@@ -16,13 +16,13 @@
         android:theme="@style/Theme.GraduationProject"
         tools:targetApi="31">
 
+<!--        <activity-->
+<!--            android:name=".presentation.activites.AddToFav"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_activity_add_to_fav"-->
+<!--            android:theme="@style/Theme.MaterialComponents.BottomSheetDialog" />-->
         <activity
-            android:name=".presentation.ui.theme.activites.AddToFav"
-            android:exported="false"
-            android:label="@string/title_activity_add_to_fav"
-            android:theme="@style/Theme.MaterialComponents.BottomSheetDialog" />
-        <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activites.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GraduationProject">
