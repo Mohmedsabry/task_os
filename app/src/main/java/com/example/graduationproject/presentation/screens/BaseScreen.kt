@@ -29,8 +29,6 @@ import androidx.compose.ui.unit.sp
 import com.example.graduationproject.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-
-
 @Composable
 fun BaseScreen(
     selectedScreen: (stateText: String) -> Unit

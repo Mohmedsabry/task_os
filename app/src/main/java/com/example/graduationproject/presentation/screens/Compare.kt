@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CompareScreen(compareClicked: (showload: Boolean) -> Unit) {
     val viewModel = SharedViewModel()
-    val coroutineScope = rememberCoroutineScope()
+
     var amount by remember {
         mutableStateOf("")
     }

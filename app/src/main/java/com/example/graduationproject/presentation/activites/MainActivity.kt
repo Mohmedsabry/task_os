@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,9 +35,9 @@ import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.model.Currency
 import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.domain.Repository
+import com.example.graduationproject.presentation.components.DailogShow
 import com.example.graduationproject.presentation.components.Loading
 import com.example.graduationproject.presentation.components.TextShow
-import com.example.graduationproject.presentation.components.dailogShow
 import com.example.graduationproject.presentation.screens.BaseScreen
 import com.example.graduationproject.presentation.screens.CompareScreen
 import com.example.graduationproject.presentation.screens.ConvertScreen
@@ -146,7 +145,7 @@ class MainActivity : ComponentActivity() {
                         }
                         item {
                             AnimatedVisibility(visible = showBottomSheet) {
-                                dailogShow(repository) {
+                                DailogShow(repository) {
                                     showBottomSheet = false
                                     viewModel.viewModelScope.launch {
                                         favList = viewModel.getAllFav()
@@ -221,11 +220,5 @@ val list = listOf(
 )
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GraduationProjectTheme {
 
-    }
-}
 

@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
+fun DailogShow(repository: Repository, dismissAction: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     var list2 by remember {
         mutableStateOf(listOf<CurrencyRoomDBItem>())
@@ -62,7 +62,7 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(top=30.dp,bottom=30.dp,start =10.dp,end=10.dp)
+                .padding(top = 30.dp, bottom = 30.dp, start = 10.dp, end = 10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_close_24),
@@ -138,46 +138,46 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                                Box(modifier = Modifier
+                            Box(modifier = Modifier
 
-                                    .clickable {
-                                        isCheck = !isCheck
-                                    }
-                                    .size(25.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isCheck) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.grop),
-                                            contentDescription = "check",
-                                            modifier = Modifier.size(30.dp)
-                                        )
-                                    } else {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ellipse),
-                                            contentDescription = "check",
-                                            modifier = Modifier.size(30.dp)
-                                        )
-                                    }
+                                .clickable {
+                                    isCheck = !isCheck
                                 }
+                                .size(25.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 if (isCheck) {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.insertRoom(list2[index])
-                                        println("${repository.getAllFav().size} insert")
-                                        viewModel.updateFlow()
-                                    }
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.grop),
+                                        contentDescription = "check",
+                                        modifier = Modifier.size(30.dp)
+                                    )
                                 } else {
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.deleteRoom(list2[index])
-                                        println("${repository.getAllFav().size} delete")
-                                        viewModel.updateFlow()
-                                    }
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ellipse),
+                                        contentDescription = "check",
+                                        modifier = Modifier.size(30.dp)
+                                    )
                                 }
                             }
+                            if (isCheck) {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    repository.insertRoom(list2[index])
+                                    println("${repository.getAllFav().size} insert")
+                                    viewModel.updateFlow()
+                                }
+                            } else {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    repository.deleteRoom(list2[index])
+                                    println("${repository.getAllFav().size} delete")
+                                    viewModel.updateFlow()
+                                }
+                            }
+                        }
                         Divider(
                             Modifier
-                                .background( Color(0xFFB9C1D9)).
-                             weight(1f),
+                                .background(Color(0xFFB9C1D9))
+                                .weight(1f),
                         )
                     }
                 }

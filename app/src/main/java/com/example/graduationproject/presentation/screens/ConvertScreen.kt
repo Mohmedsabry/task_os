@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -61,7 +62,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConvertScreen(
     compare: (amount: Int, baseId: Int, listToCompare: List<Int>, showLoading: Boolean) -> Unit,
@@ -251,7 +252,6 @@ fun ConvertScreen(
 
             Button(
                 onClick = {
-//Toast here
                     if (amountValue.isNotEmpty() && amountValue.isNotBlank()) {
                         showLoading = true
                         compare.invoke(1, base.id, listToCompare, true)
