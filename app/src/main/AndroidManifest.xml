@@ -22,7 +22,7 @@
 <!--            android:label="@string/title_activity_add_to_fav"-->
 <!--            android:theme="@style/Theme.MaterialComponents.BottomSheetDialog" />-->
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activites.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GraduationProject">
