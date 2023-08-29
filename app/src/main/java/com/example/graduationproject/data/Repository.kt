@@ -1,4 +1,4 @@
-package com.example.graduationproject.domain
+package com.example.graduationproject.data
 
 import com.example.graduationproject.data.datasource.RoomDB
 import com.example.graduationproject.data.model.CompareModelGet

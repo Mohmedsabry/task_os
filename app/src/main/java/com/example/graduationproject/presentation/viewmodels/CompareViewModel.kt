@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.graduationproject.data.model.CompareModelGet
 import com.example.graduationproject.data.model.CompareModelPost
 import com.example.graduationproject.data.presestance.SharedObject
-import com.example.graduationproject.domain.Repository
+import com.example.graduationproject.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
