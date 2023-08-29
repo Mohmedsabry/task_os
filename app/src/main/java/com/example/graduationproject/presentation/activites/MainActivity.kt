@@ -120,7 +120,7 @@ class MainActivity : ComponentActivity() {
                                             fontSize = 15
                                         )
                                         TextShow(
-                                            text = "Currency",
+                                            text = "CURRENCY",
                                             color = Color(0xFFB8B8B8),
                                             fontFamily = FontFamily.Default,
                                             fontSize = 13
