@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -27,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,15 +33,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.graduationproject.R
-import com.example.graduationproject.data.model.CurrencyRoomDBItem
 import com.example.graduationproject.presentation.viewmodels.SharedViewModel
 import com.example.graduationproject.ui.theme.CustomColor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -91,7 +84,7 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                         .fillMaxSize()
                         .padding(10.dp)
                 ) {
-                    items(sharedViewModel.dialogList) { item->
+                    items(sharedViewModel.dialogList) { item ->
                         Row(
                             Modifier
                                 .padding(10.dp)
@@ -116,7 +109,7 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                             Spacer(modifier = Modifier.width(10.dp))
                             Column(
                                 verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.Start
                             ) {
                                 TextShow(
                                     text = item.currency,
@@ -125,8 +118,8 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                                     fontSize = 13
                                 )
                                 TextShow(
-                                    text = item.currency,
-                                    color = CustomColor.black,
+                                    text = "CURRENCY",
+                                    color = Color(0xFFB8B8B8),
                                     fontFamily = FontFamily.Default,
                                     fontSize = 11
                                 )
@@ -148,19 +141,27 @@ fun Dialog(sharedViewModel: SharedViewModel, dismissAction: () -> Unit) {
                                     .size(25.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    if (isCheck)
+                                    if (isCheck) {
                                         Icon(
-                                            Icons.Default.Check,
+                                            painter = painterResource(id = R.drawable.grop),
                                             contentDescription = "check",
-                                            tint = Color.White
+                                            tint = Color.White, modifier = Modifier.size(30.dp)
                                         )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ellipse),
+                                            contentDescription = "check",
+                                            tint = Color.White, modifier = Modifier.size(30.dp)
+                                        )
+
+                                    }
                                 }
                                 if (isCheck) {
-                                        sharedViewModel.insertRoom(item)
-                                        sharedViewModel.getAllFav()
+                                    sharedViewModel.insertRoom(item)
+                                    sharedViewModel.getAllFav()
                                 } else {
-                                        sharedViewModel.deleteRoom(item)
-                                        sharedViewModel.getAllFav()
+                                    sharedViewModel.deleteRoom(item)
+                                    sharedViewModel.getAllFav()
                                 }
                             }
                         }
