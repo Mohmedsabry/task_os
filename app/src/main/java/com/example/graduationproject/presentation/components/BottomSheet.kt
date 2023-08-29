@@ -1,8 +1,5 @@
 package com.example.graduationproject.presentation.components
 
-//import androidx.compose.material3.BottomSheetDefaults
-//import androidx.compose.material3.ModalBottomSheet
-//import androidx.compose.material3.rememberModalBottomSheetState
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -133,7 +130,7 @@ fun dailogShow(repository: Repository, dismissAction: () -> Unit) {
                                 )
                                 TextShow(
                                     text = "CURRENCY",
-                                    color = CustomColor.black,
+                                    color = Color(0xFFB8B8B8),
                                     fontFamily = FontFamily.Default,
                                     fontSize = 11
                                 )

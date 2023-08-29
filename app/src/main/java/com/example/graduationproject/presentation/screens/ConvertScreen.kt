@@ -298,10 +298,7 @@ fun ConvertScreen(
                     fontSize = 18,
                     weight = 700
                 )
-                //   var test by remember{ mutableStateOf(false) }
-                //   if(test){
-                //       BottomSheet()
-                //    }
+
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     onClick = {
@@ -313,7 +310,7 @@ fun ConvertScreen(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.plus_1),
-                        contentDescription = "Add to favourite", contentScale = ContentScale.None
+                        contentDescription = "Add to Favourite", contentScale = ContentScale.None
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     TextShow(

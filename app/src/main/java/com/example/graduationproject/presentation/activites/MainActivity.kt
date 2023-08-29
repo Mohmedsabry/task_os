@@ -68,19 +68,19 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(listOf<CurrencyRoomDBItem>())
                 }
                 var listToCompare = mutableListOf<Int>()
-                    viewModel.viewModelScope.launch {
-                        viewModel.flowForCompare.collectLatest {
-                            val list = mutableListOf<String>()
-                            list.clear()
-                            it.compare_result.forEach {
-                                list.add(it.toString())
-                            }
-                            if (list.size == listToCompare.size)
-                                viewModel.updateRoom(list, listToCompare)
-                            favList = viewModel.getAllFav()
-                            println("hi ${it.compare_result.size} ${listToCompare.size}")
+                viewModel.viewModelScope.launch {
+                    viewModel.flowForCompare.collectLatest {
+                        val list = mutableListOf<String>()
+                        list.clear()
+                        it.compare_result.forEach {
+                            list.add(it.toString())
                         }
+                        if (list.size == listToCompare.size)
+                            viewModel.updateRoom(list, listToCompare)
+                        favList = viewModel.getAllFav()
+                        println("hi ${it.compare_result.size} ${listToCompare.size}")
                     }
+                }
                 coroutineScope.launch {
                     favList = viewModel.getAllFav()
                     listToCompare.clear()
@@ -186,10 +186,10 @@ class MainActivity : ComponentActivity() {
                                             fontSize = 15
                                         )
                                         TextShow(
-                                            text = "Currency",
+                                            text = "CURRENCY",
                                             color = Color(0xFFB8B8B8),
                                             fontFamily = FontFamily.Default,
-                                            fontSize = 13
+                                            fontSize = 11
                                         )
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
@@ -228,4 +228,4 @@ fun GreetingPreview() {
 
     }
 }
-// dimensionResource(id = R.dimen._17sdp)
+
